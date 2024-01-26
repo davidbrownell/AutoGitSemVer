@@ -1,0 +1,70 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema#",
+  "$defs" : {
+    "__ItemStatement-Ln56-Item-Ln56" : {
+      "type" : "string",
+      "minLength" : 1
+    },
+    "__ItemStatement-Ln86-Item-Ln86" : {
+      "type" : "string",
+      "minLength" : 1
+    }
+  },
+  "type" : "object",
+  "additionalProperties" : false,
+  "properties" : {
+    "version_prefix" : {
+      "$ref" : "#/$defs/__ItemStatement-Ln56-Item-Ln56",
+      "description" : "String that serves as a prefix before the version; this functionality can be used in the support of distinct versions within the same repository.",
+      "default" : null
+    },
+    "include_branch_name_when_necessary" : {
+      "type" : "boolean",
+      "description" : "Include the branch name in the prerelease portion of the semantic version when building outside of a main branch.",
+      "default" : true
+    },
+    "include_timestamp_when_necessary" : {
+      "type" : "boolean",
+      "description" : "Include a timestamp in the metadata portion of the semantic version.",
+      "default" : true
+    },
+    "include_computer_name_when_necessary" : {
+      "type" : "boolean",
+      "description" : "Include the computer name in the metadata portion of the semantic version.",
+      "default" : true
+    },
+    "prerelease_environment_variable_name" : {
+      "type" : "string",
+      "minLength" : 1,
+      "description" : "Name of the environment variable used to specify the build name associated with the generated semantic version.",
+      "default" : "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
+    },
+    "initial_version" : {
+      "type" : "string",
+      "minLength" : 1,
+      "description" : "The initial semantic version used when generating semantic versions.",
+      "default" : "0.0.0"
+    },
+    "main_branch_names" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/$defs/__ItemStatement-Ln86-Item-Ln86"
+      },
+      "minItems" : 1,
+      "description" : "Name of branches considered to be 'mainline' branches; branch information will not be included in the generated semantic version.",
+      "default" : [
+        "main",
+        "master",
+        "default"
+      ]
+    }
+  },
+  "required" : [
+    "include_branch_name_when_necessary",
+    "include_timestamp_when_necessary",
+    "include_computer_name_when_necessary",
+    "prerelease_environment_variable_name",
+    "initial_version",
+    "main_branch_names"
+  ]
+}

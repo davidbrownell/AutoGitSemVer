@@ -1,0 +1,141 @@
+# ----------------------------------------------------------------------
+# |
+# |  standard.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2024-01-26 14:25:28
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2024
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+name: "Standard"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *' # Once a day at 12am UTC
+  workflow_dispatch:
+
+jobs:
+  # ----------------------------------------------------------------------
+  action_contexts:
+    name: "Display GitHub Action Contexts"
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_action_contexts.yaml@main
+
+  # ----------------------------------------------------------------------
+  validate:
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+        python_version:
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          # - "3.9"  # Not supported
+          # - "3.8"  # Not supported
+
+    name: "Validate (${{ matrix.os }}; py${{ matrix.python_version }})"
+    runs-on: ${{ matrix.os }}
+
+    env:
+      COLUMNS: "200"
+      SIMULATE_TERMINAL_CAPABILITIES_SUPPORTS_COLORS: "1"
+      PYTHONIOENCODING: "UTF-8"
+
+    steps:
+      # Ensure that windows machines support long paths
+      - name: git Long File Path Support on Windows
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        run: |
+          git config --system core.longpaths true
+
+      - name: "Checkout Source"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize
+        id: Initialize
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/initialize@main
+        with:
+          operating_system: ${{ matrix.os }}
+
+      - name: Validate
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/validate@main
+        with:
+          operating_system: ${{ matrix.os }}
+          python_version: ${{ matrix.python_version }}
+          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
+          script_extension: ${{ steps.initialize.outputs.script_extension }}
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          source_command: ${{ steps.initialize.outputs.source_command }}
+          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
+
+  # ----------------------------------------------------------------------
+  package:
+    needs: validate
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - ubuntu-latest
+
+        python_version:
+          - "3.10"
+
+    name: "Package (${{ matrix.os }})"
+    runs-on: ${{ matrix.os }}
+
+    env:
+      COLUMNS: "200"
+      SIMULATE_TERMINAL_CAPABILITIES_SUPPORTS_COLORS: "1"
+      PYTHONIOENCODING: "UTF-8"
+
+    steps:
+      # Ensure that windows machines support long paths
+      - name: git Long File Path Support on Windows
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        run: |
+          git config --system core.longpaths true
+
+      - name: "Checkout Source"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize
+        id: Initialize
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/initialize@main
+        with:
+          operating_system: ubuntu-latest
+
+      - name: Package
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/package@main
+        with:
+          operating_system: ${{ matrix.os }}
+          python_version: ${{ matrix.python_version }}
+          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
+          script_extension: ${{ steps.initialize.outputs.script_extension }}
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          source_command: ${{ steps.initialize.outputs.source_command }}
+          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}

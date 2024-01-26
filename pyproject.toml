@@ -1,0 +1,191 @@
+# ----------------------------------------------------------------------
+# |
+# |  pyproject.toml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-12-18 15:22:11
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+[build-system]
+requires = ["setuptools >= 63.0"]
+build-backend = "setuptools.build_meta"
+
+# ----------------------------------------------------------------------
+# |
+# |  Project
+# |
+# ----------------------------------------------------------------------
+[project]
+name = "AutoGitSemVer"
+description = "Calculates a semantic version based on git changes."
+
+license = { text = "Boost Software License 1.0" }
+
+authors = [
+    { name = "David Brownell", email = "db@DavidBrownell.com" },
+]
+
+keywords = [
+    # TODO
+]
+
+# https://pypi.org/classifiers/
+classifiers = [
+    # BugBug: Update these
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Common Public License",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: System :: System Shells",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "dbrownell_Common",
+    "GitPython == 3.*",
+    "jsonschema == 4.*",
+    "rtyaml == 1.*",
+    "semantic_version == 2.*",
+]
+
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+dev = [
+    "dbrownell_DevTools",
+]
+
+package = [
+    "build == 1.*",
+    "twine == 4.*",
+]
+
+[project.scripts]
+autogitsemver = "AutoGitSemVer:EntryPoint.app"
+
+[project.urls]
+Homepage = "https://github.com/davidbrownell/AutoGitSemVer"
+Documentation = "https://github.com/davidbrownell/AutoGitSemVer"
+Repository = "https://github.com/davidbrownell/AutoGitSemVer"
+
+# ----------------------------------------------------------------------
+# |
+# |  Black
+# |
+# ----------------------------------------------------------------------
+[tool.black]
+line-length = 100
+
+# ----------------------------------------------------------------------
+# |
+# |  Pylint
+# |
+# ----------------------------------------------------------------------
+[tool.pylint.basic]
+class-const-naming-style = "any"
+function-naming-style = "PascalCase"
+good-names = [
+    "i",
+    "j",
+    "k",
+    "ex",
+    "Run",
+    "_",
+    "dm",                                   # added
+    "f",                                    # added
+]
+method-naming-style = "any"
+module-naming-style = "PascalCase"
+
+[tool.pylint.design]
+max-args = 10
+max-parents = 15
+
+[tool.pylint.main]
+ignore-patterns = [
+    # Note that the pylint vscode extension has trouble with wrapping these patterns in quotes
+    # (which is required to parse the file correctly). Because of this, each pattern must be
+    # converted to a glob pattern and specified in the pylint vscode settings as well.
+    "^.+?Tests/.*$",
+]
+
+[tool.pylint."messages control"]
+disable = [
+    "raw-checker-failed",
+    "bad-inline-option",
+    "locally-disabled",
+    "file-ignored",
+    "suppressed-message",
+    "useless-suppression",
+    "deprecated-pragma",
+    "use-symbolic-message-instead",
+    "assignment-from-no-return",            # added
+    "broad-except",                         # added
+    "broad-exception-raised",               # added
+    "cell-var-from-loop",                   # added
+    "consider-using-f-string",              # added
+    "import-outside-toplevel",              # added
+    "line-too-long",                        # added
+    "missing-function-docstring",           # added
+    "subprocess-run-check",                 # added
+    "super-with-arguments",                 # added
+    "too-few-public-methods",               # added
+    "unnecessary-lambda-assignment",        # added
+    "unnecessary-pass",                     # added
+    "unspecified-encoding",                 # added
+    "useless-object-inheritance",           # added
+]
+
+# ----------------------------------------------------------------------
+# |
+# |  Pyright
+# |
+# ----------------------------------------------------------------------
+[tool.pyright]
+exclude = [
+    "**/*Tests/*",
+    "**/Generated/*",
+]
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+# ----------------------------------------------------------------------
+# |
+# |  Pytest
+# |
+# ----------------------------------------------------------------------
+[tool.pytest.ini_options]
+python_files = [
+    "**/*Test.py",
+]
+
+# ----------------------------------------------------------------------
+# |
+# |  Setuptools
+# |
+# ----------------------------------------------------------------------
+[tool.setuptools.dynamic]
+version = { attr = "AutoGitSemVer.__version__" }
+
+[tool.setuptools.package-data]
+AutoGitSemVer = ["*.json", ]
