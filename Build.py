@@ -21,8 +21,6 @@ from pathlib import Path
 
 import typer
 
-from dbrownell_Common import SubprocessEx  # type: ignore [import-untyped]
-from dbrownell_Common.Streams.DoneManager import DoneManager  # type: ignore [import-untyped]
 from dbrownell_DevTools.RepoBuildTools import Python as RepoBuildTools  # type: ignore [import-untyped]
 from typer.core import TyperGroup
 
@@ -60,40 +58,13 @@ app = typer.Typer(
 Black = RepoBuildTools.BlackFuncFactory(this_dir, app)
 Pylint = RepoBuildTools.PylintFuncFactory(src_dir, app)
 Pytest = RepoBuildTools.PytestFuncFactory(tests_dir, "AutoGitSemVer", app, 80.0)
+UpdateVersion = RepoBuildTools.UpdateVersionFuncFactory(
+    src_dir.parent,
+    src_dir / "__init__.py",
+    app,
+)
 Package = RepoBuildTools.PackageFuncFactory(this_dir, app)
 Publish = RepoBuildTools.PublishFuncFactory(this_dir, app)
-
-
-# ----------------------------------------------------------------------
-@app.command("UpdateVersion", no_args_is_help=False)
-def UpdateVersion():
-    """Updates the version"""
-
-    with DoneManager.CreateCommandLine() as dm:
-        result = SubprocessEx.Run(
-            'autogitsemver "{}" --no-branch-name --no-metadata --quiet'.format(src_dir.parent)
-        )
-
-        dm.result = result.returncode
-
-        version = result.output.strip()
-
-        init_filename = src_dir / "__init__.py"
-
-        with init_filename.open() as f:
-            content = f.read()
-
-        import re
-
-        content = re.sub(
-            r'__version__ = "\d+\.\d+\.\d+"',
-            '__version__ = "{}"'.format(version),
-            content,
-            1,
-        )
-
-        with init_filename.open("w") as f:
-            f.write(content)
 
 
 # ----------------------------------------------------------------------
