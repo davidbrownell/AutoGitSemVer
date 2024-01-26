@@ -463,10 +463,10 @@ class TestSemanticVersion:
         assert semver.minor == 100
         assert semver.patch == 10
         assert (
-            semver.prerelease and "bumped_major" not in semver.prerelease
+            semver.prerelease is None or "bumped_major" not in semver.prerelease
         )  # prerelease is wiped when a new version is encountered
         assert (
-            semver.prerelease and "bumped_minor" not in semver.prerelease
+            semver.prerelease is None or "bumped_minor" not in semver.prerelease
         )  # prerelease is wiped when a new version is encountered
         assert semver.build and "bumped_patch" in semver.build
 
