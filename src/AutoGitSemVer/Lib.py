@@ -585,6 +585,10 @@ def EnumCommits(
         offset += len(commits)
 
         for commit in commits:
+            # Ignore merge commits
+            if len(commit.parents) > 1:
+                continue
+
             # Tags are most often associated with merges into a mainline branch, but we have filtered commits
             # to only those that have a single parent (in other words, that aren't merges). Therefore, look
             # at parents that represent a merge into a mainline branch when associating tags with commits.
