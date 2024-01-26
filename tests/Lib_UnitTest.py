@@ -18,7 +18,6 @@
 import re
 import textwrap
 
-from contextlib import contextmanager
 from io import StringIO
 from unittest.mock import patch
 from uuid import uuid4
@@ -36,8 +35,8 @@ def test_EnumCommits(tmp_path_factory):
     repo_dir = tmp_path_factory.mktemp("repo")
 
     assert SubprocessEx.Run("git init", cwd=repo_dir).returncode == 0
-    assert SubprocessEx.Run('git config --global user.name "Test User"').returncode == 0
-    assert SubprocessEx.Run('git config --global user.email "a@b.com"').returncode == 0
+    assert SubprocessEx.Run('git config user.name "Test User"', cwd=repo_dir).returncode == 0
+    assert SubprocessEx.Run('git config user.email "a@b.com"', cwd=repo_dir).returncode == 0
 
     # Commit 1
     for index in range(2):
