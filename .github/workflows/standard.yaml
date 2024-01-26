@@ -78,7 +78,7 @@ jobs:
           operating_system: ${{ matrix.os }}
 
       - name: Validate
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/validate@main
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_validate@main
         with:
           operating_system: ${{ matrix.os }}
           python_version: ${{ matrix.python_version }}
@@ -129,7 +129,7 @@ jobs:
           operating_system: ubuntu-latest
 
       - name: Package
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/package@main
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_package@main
         with:
           operating_system: ${{ matrix.os }}
           python_version: ${{ matrix.python_version }}
