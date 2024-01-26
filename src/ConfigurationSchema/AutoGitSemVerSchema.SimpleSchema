@@ -1,0 +1,93 @@
+# ----------------------------------------------------------------------
+# |
+# |  AutoGitSemVer.SimpleSchema
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-02-24 15:01:08
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+
+# Configuration file for AutoSemVer. Place json files anywhere under a repository to modify how
+# semantic versions are generated.
+#
+# To generate a single sematic version for the entire repository:
+#
+#    - Place a single configuration file in the root of the repository (e.g. `<repo_root>/AutoSemVer.json`) -
+#
+#        - or -
+#
+#    - Do nothing to use default all values.
+#
+# To generate a semantic version for changes under the "Directory1" directory and a separate semantic
+# version for changes under the "Directory2" directory:
+#
+#    <repo_root>
+#    |-- Directory1
+#    |   |-- AutoSemVer.json
+#    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
+#    |   |    will be controlled by this AutoSemVer.json file>
+#    |-- Directory2
+#    |   |-- AutoSemVer.json
+#    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
+#    |   |    will be controlled by this AutoSemVer.json file>
+#    |-- <Changes in this directory will not impact either semantic version>
+#
+
+# Version formats:
+#   [<prefix>]<major>.<minor>.<patch>[-[<branch>]+?[<pre_release_name>][-<timestamp>[.<computer_name>]]]
+#
+#   Examples:
+#
+#       Value                                                   Prefix  Major  Minor  Patch    Branch   Pre Release Name   Timestamp    Computer Name
+#       ------------------------------------------------------  ------  -----  -----  -----  ---------  ----------------  ------------  -------------
+#       1.2.3                                                    None     1      2      3       main          None           None           None
+#       v4.5.6                                                    v       4      5      6       main          None           None           None
+#       CI-v1.23.5-alpha1+202302251018.ACOMPUTERNAME             CI-v     1     23      5       main         alpha1       202302251018  ACOMPUTERNAME
+#       CI-v1.23.5-foobranch.alpha1+202302251018.ACOMPUTERNAME   CI-v     1     23      5    foobranch       alpha1       202302251018  ACOMPUTERNAME
+#
+
+version_prefix: String? {
+    default: None
+    description: "String that serves as a prefix before the version; this functionality can be used in the support of distinct versions within the same repository."
+}
+
+include_branch_name_when_necessary: Boolean {
+    default: True
+    description: "Include the branch name in the prerelease portion of the semantic version when building outside of a main branch."
+}
+
+include_timestamp_when_necessary: Boolean {
+    default: True
+    description: "Include a timestamp in the metadata portion of the semantic version."
+}
+
+include_computer_name_when_necessary: Boolean {
+    default: True
+    description: "Include the computer name in the metadata portion of the semantic version."
+}
+
+prerelease_environment_variable_name: String {
+    default: "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
+    description: "Name of the environment variable used to specify the build name associated with the generated semantic version."
+}
+
+initial_version: String {
+    default: "0.0.0"
+    description: "The initial semantic version used when generating semantic versions."
+}
+
+main_branch_names: String+ {
+    default: [
+        "main",
+        "master",
+        "default",
+    ]
+    description: "Name of branches considered to be 'mainline' branches; branch information will not be included in the generated semantic version."
+}

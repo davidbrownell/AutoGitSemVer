@@ -1,0 +1,13 @@
+Activate*.cmd
+Activate*.sh
+Deactivate*.cmd
+Deactivate*.sh
+
+Generated/**
+dist/**
+src/AutoGitSemVer.egg-info/**
+.vscode/**
+**/__pycache__/**
+
+.coverage
+lcov.info
