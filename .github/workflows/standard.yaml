@@ -3,7 +3,7 @@
 # |  standard.yaml
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2024-01-26 14:25:28
+# |      2024-01-21 14:09:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -51,42 +51,12 @@ jobs:
           # - "3.9"  # Not supported
           # - "3.8"  # Not supported
 
-    name: "Validate (${{ matrix.os }}; py${{ matrix.python_version }})"
-    runs-on: ${{ matrix.os }}
+    name: Validate
 
-    env:
-      COLUMNS: "200"
-      SIMULATE_TERMINAL_CAPABILITIES_SUPPORTS_COLORS: "1"
-      PYTHONIOENCODING: "UTF-8"
-
-    steps:
-      # Ensure that windows machines support long paths
-      - name: git Long File Path Support on Windows
-        if: ${{ startsWith(matrix.os, 'windows') }}
-        run: |
-          git config --system core.longpaths true
-
-      - name: "Checkout Source"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Initialize
-        id: Initialize
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/initialize@main
-        with:
-          operating_system: ${{ matrix.os }}
-
-      - name: Validate
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_validate@main
-        with:
-          operating_system: ${{ matrix.os }}
-          python_version: ${{ matrix.python_version }}
-          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
-          script_extension: ${{ steps.initialize.outputs.script_extension }}
-          shell_name: ${{ steps.initialize.outputs.shell_name }}
-          source_command: ${{ steps.initialize.outputs.source_command }}
-          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_validate.yaml@main
+    with:
+      operating_system: ${{ matrix.os }}
+      python_version: ${{ matrix.python_version }}
 
   # ----------------------------------------------------------------------
   package:
@@ -97,65 +67,29 @@ jobs:
 
       matrix:
         os:
+          - macos-latest
           - ubuntu-latest
+          - windows-latest
 
         python_version:
+          - "3.12"
+          - "3.11"
           - "3.10"
+          # - "3.9"  # Not supported
+          # - "3.8"  # Not supported
 
-    name: "Package (${{ matrix.os }})"
-    runs-on: ${{ matrix.os }}
+    name: Package
 
-    env:
-      COLUMNS: "200"
-      SIMULATE_TERMINAL_CAPABILITIES_SUPPORTS_COLORS: "1"
-      PYTHONIOENCODING: "UTF-8"
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_package.yaml@main
+    with:
+      operating_system: ${{ matrix.os }}
+      python_version: ${{ matrix.python_version }}
 
-    steps:
-      # Ensure that windows machines support long paths
-      - name: git Long File Path Support on Windows
-        if: ${{ startsWith(matrix.os, 'windows') }}
-        run: |
-          git config --system core.longpaths true
+  # ----------------------------------------------------------------------
+  publish:
+    needs: package
 
-      - name: "Checkout Source"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    name: Publish
 
-      - name: Initialize
-        id: Initialize
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/initialize@main
-        with:
-          operating_system: ubuntu-latest
-
-      - name: Package
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_package@main
-        with:
-          operating_system: ${{ matrix.os }}
-          python_version: ${{ matrix.python_version }}
-          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
-          script_extension: ${{ steps.initialize.outputs.script_extension }}
-          shell_name: ${{ steps.initialize.outputs.shell_name }}
-          source_command: ${{ steps.initialize.outputs.source_command }}
-          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
-
-      - name: Has Source Changes?
-        uses: dorny/paths-filter@v3
-        id: has_code_changes
-        with:
-          filters: |
-            src:
-              - 'src/**'
-
-      - name: Publish
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.has_code_changes.outputs.src == 'true' }}
-        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_publish@main
-        with:
-          operating_system: ${{ matrix.os }}
-          python_version: ${{ matrix.python_version }}
-          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
-          script_extension: ${{ steps.initialize.outputs.script_extension }}
-          shell_name: ${{ steps.initialize.outputs.shell_name }}
-          source_command: ${{ steps.initialize.outputs.source_command }}
-          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_publish.yaml@main
+    secrets: inherit
