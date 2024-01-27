@@ -138,4 +138,24 @@ jobs:
           shell_name: ${{ steps.initialize.outputs.shell_name }}
           source_command: ${{ steps.initialize.outputs.source_command }}
           sudo_command: ${{ steps.initialize.outputs.sudo_command }}
+
+      - name: Has Source Changes?
+        uses: dorny/paths-filter@v3
+        id: has_code_changes
+        with:
+          filters: |
+            src:
+              - 'src/**'
+
+      - name: Publish
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.has_code_changes.outputs.src == 'true' }}
+        uses: davidbrownell/dbrownell_DevTools/.github/actions/python_publish@main
+        with:
+          operating_system: ${{ matrix.os }}
+          python_version: ${{ matrix.python_version }}
+          script_prefix: ${{ steps.initialize.outputs.script_prefix }}
+          script_extension: ${{ steps.initialize.outputs.script_extension }}
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          source_command: ${{ steps.initialize.outputs.source_command }}
+          sudo_command: ${{ steps.initialize.outputs.sudo_command }}
           pypi_token: ${{ secrets.PYPI_TOKEN }}
