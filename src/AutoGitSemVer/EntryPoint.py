@@ -15,8 +15,11 @@
 # ----------------------------------------------------------------------
 """Automatically generates semantic versions based on changes in a git repository."""
 
+import sys
+
+from io import StringIO
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Callable, Optional
 
 import typer
 
@@ -112,19 +115,62 @@ def Generate(
             help="Write debug information to the terminal.",
         ),
     ] = False,
+    quiet: Annotated[
+        bool,
+        typer.Option(
+            "--quiet",
+            help="Do not display any information other than the generated semantic version.",
+        ),
+    ] = False,
 ) -> None:
+    output_stream: Optional[TextWriterT] = None
+    postprocess_func: Optional[
+        Callable[[DoneManager, Optional[GetSemanticVersionResult]], None]
+    ] = None
+
+    if quiet:
+        sink = StringIO()
+
+        output_stream = sink
+
+        # ----------------------------------------------------------------------
+        def PostprocessQuietData(
+            dm: DoneManager,
+            result: Optional[GetSemanticVersionResult],
+        ) -> None:
+            if dm.result != 0:
+                sys.stdout.write(sink.getvalue())
+            else:
+                assert result is not None
+                sys.stdout.write(str(result.semantic_version))
+
+        # ----------------------------------------------------------------------
+
+        postprocess_func = PostprocessQuietData
+
+    else:
+        output_stream = sys.stdout
+        postprocess_func = lambda *args, **kwargs: None
+
+    assert output_stream is not None
+    assert postprocess_func is not None
+
     with DoneManager.CreateCommandLine(
+        output_stream,
         flags=DoneManagerFlags.Create(verbose=verbose, debug=debug),
     ) as dm:
-        GetSemanticVersion(
-            dm,
-            path,
-            prerelease_name=prerelease_name,
-            include_branch_name_when_necessary=not no_branch_name,
-            no_prefix=no_prefix,
-            no_metadata=no_metadata,
-            style=style,
-        )
+        result: Optional[GetSemanticVersionResult] = None
+
+        with ExitStack(lambda: postprocess_func(dm, result)):
+            result = GetSemanticVersion(
+                dm,
+                path,
+                prerelease_name=prerelease_name,
+                include_branch_name_when_necessary=not no_branch_name,
+                no_prefix=no_prefix,
+                no_metadata=no_metadata,
+                style=style,
+            )
 
 
 # ----------------------------------------------------------------------
