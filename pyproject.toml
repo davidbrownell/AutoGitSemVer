@@ -39,7 +39,6 @@ keywords = [
 
 # https://pypi.org/classifiers/
 classifiers = [
-    # BugBug: Update these
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Common Public License",
@@ -150,9 +149,7 @@ disable = [
     "super-with-arguments",                 # added
     "too-few-public-methods",               # added
     "unnecessary-lambda-assignment",        # added
-    "unnecessary-pass",                     # added
     "unspecified-encoding",                 # added
-    "useless-object-inheritance",           # added
 ]
 
 # ----------------------------------------------------------------------

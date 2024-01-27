@@ -51,7 +51,7 @@ DEFAULT_CONFIGURATION_FILENAMES: list[str] = [
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class Configuration(object):
+class Configuration:
     """Data used to configure how the semantic version is generated."""
 
     # pylint: disable=too-many-instance-attributes
@@ -86,7 +86,7 @@ class GenerateStyle(str, Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class GetSemanticVersionResult(object):
+class GetSemanticVersionResult:
     """Result of GetSemanticVersion."""
 
     configuration_filename: Optional[Path]
@@ -95,7 +95,7 @@ class GetSemanticVersionResult(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class CommitInfo(object):
+class CommitInfo:
     """Information about a commit."""
 
     # ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ class CommitInfo(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class VersionDelta(object):
+class VersionDelta:
     """Information about a delta applied to a semantic version based on information found in a commit."""
 
     # ----------------------------------------------------------------------
