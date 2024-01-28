@@ -121,7 +121,7 @@ class VersionDelta:
     minor: int
     patch: int
 
-    pre_release: Optional[str]
+    prerelease: Optional[str]
     build_metadata: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -130,7 +130,7 @@ class VersionDelta:
             self.major,
             self.minor,
             self.patch,
-            "-{}".format(self.pre_release) if self.pre_release else "",
+            "-{}".format(self.prerelease) if self.prerelease else "",
             "+{}".format(self.build_metadata) if self.build_metadata else "",
         )
 
@@ -285,46 +285,45 @@ def GetSemanticVersion(
 
         repo = git.Repo(repository_root)
 
+        initial_version = VersionDelta(
+            configuration.initial_version.major or 0,
+            configuration.initial_version.minor or 0,
+            configuration.initial_version.patch or 0,
+            None,
+            None,
+        )
+
         for commit in EnumCommits(repo):
             changes_processed += 1
 
             if not ShouldProcess(commit):
                 continue
 
-            delta_applied = False
+            delta_applied: Optional[VersionDelta] = None
 
             with enumerate_dm.VerboseNested(
                 "Processing '{}' ({})".format(commit.id, commit.author_date),
-                lambda: "delta applied" if delta_applied else None,
+                lambda: str(delta_applied) if delta_applied else None,
             ):
-                should_continue = True
-
                 this_delta = ExtractVersionFromTags(commit.tags)
                 if this_delta is not None:
-                    should_continue = False
-                else:
-                    this_delta = commit_delta_extraction_func(enumerate_dm, commit)
+                    initial_version = this_delta
+                    break
 
+                this_delta = commit_delta_extraction_func(enumerate_dm, commit)
                 if this_delta is None:
                     continue
 
                 version_deltas.append(this_delta)
-                delta_applied = True
-
-                if not should_continue:
-                    break
+                delta_applied = this_delta
 
     with dm.Nested("Calculating semantic version...") as calculate_dm:
-        major = configuration.initial_version.major
-        minor = configuration.initial_version.minor
-        patch = configuration.initial_version.patch
+        major = initial_version.major
+        minor = initial_version.minor
+        patch = initial_version.patch
 
-        assert isinstance(major, int), major
-        assert isinstance(minor, int), minor
-        assert isinstance(patch, int), patch
-
-        prerelease: list[str] = list(configuration.initial_version.prerelease or [])
-        metadata: list[str] = list(configuration.initial_version.build or [])
+        prerelease: list[str] = list(initial_version.prerelease or [])
+        metadata: list[str] = list(initial_version.build_metadata or [])
 
         for version_delta in reversed(version_deltas):
             if version_delta.major:
@@ -335,21 +334,21 @@ def GetSemanticVersion(
                 prerelease = []
                 metadata = []
 
-            elif version_delta.minor:
+            if version_delta.minor:
                 minor += version_delta.minor
                 patch = 0
 
                 prerelease = []
                 metadata = []
 
-            elif version_delta.patch:
+            if version_delta.patch:
                 patch += version_delta.patch
 
                 prerelease = []
                 metadata = []
 
-            if version_delta.pre_release:
-                prerelease.append(version_delta.pre_release)
+            if version_delta.prerelease:
+                prerelease.append(version_delta.prerelease)
             if version_delta.build_metadata:
                 metadata.append(version_delta.build_metadata)
 

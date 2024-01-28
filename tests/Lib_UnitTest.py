@@ -347,6 +347,20 @@ class TestSemanticVersion:
         assert semver.patch == 0
 
     # ----------------------------------------------------------------------
+    def test_WithTag2(self):
+        result, semver = _GetSemanticVersionImpl(
+            [
+                _CreateCommitInfo(""),
+                _CreateCommitInfo("", tags=["1.2.3"]),
+            ],
+        )
+
+        assert result == 0
+        assert semver.major == 1
+        assert semver.minor == 2
+        assert semver.patch == 4
+
+    # ----------------------------------------------------------------------
     def test_PrereleaseName(self):
         result, semver = _GetSemanticVersionImpl([], prerelease_name="MyPrereleaseName")
 
