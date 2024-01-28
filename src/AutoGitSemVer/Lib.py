@@ -305,17 +305,16 @@ def GetSemanticVersion(
                 "Processing '{}' ({})".format(commit.id, commit.author_date),
                 lambda: str(delta_applied) if delta_applied else None,
             ):
-                this_delta = ExtractVersionFromTags(commit.tags)
-                if this_delta is not None:
-                    initial_version = this_delta
+                delta_applied = ExtractVersionFromTags(commit.tags)
+                if delta_applied is not None:
+                    initial_version = delta_applied
                     break
 
-                this_delta = commit_delta_extraction_func(enumerate_dm, commit)
-                if this_delta is None:
+                delta_applied = commit_delta_extraction_func(enumerate_dm, commit)
+                if delta_applied is None:
                     continue
 
-                version_deltas.append(this_delta)
-                delta_applied = this_delta
+                version_deltas.append(delta_applied)
 
     with dm.Nested("Calculating semantic version...") as calculate_dm:
         major = initial_version.major
