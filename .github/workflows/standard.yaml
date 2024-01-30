@@ -68,7 +68,7 @@ jobs:
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_package_coverage.yaml@main
     with:
       gist_id: f15146b1b8fdc0a5d45ac0eb786a84f7
-      gist_filename: AutoGitSemVer.json
+      gist_filename: AutoGitSemVer_coverage.json
     secrets: inherit
 
   # ----------------------------------------------------------------------
