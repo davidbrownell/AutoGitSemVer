@@ -68,6 +68,8 @@ dynamic = [
     "version",
 ]
 
+readme = "README.md"
+
 [project.optional-dependencies]
 dev = [
     "dbrownell_DevTools",

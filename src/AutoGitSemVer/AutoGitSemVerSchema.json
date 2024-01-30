@@ -1,20 +1,11 @@
 {
   "$schema" : "https://json-schema.org/draft/2020-12/schema#",
-  "$defs" : {
-    "__ItemStatement-Ln56-Item-Ln56" : {
-      "type" : "string",
-      "minLength" : 1
-    },
-    "__ItemStatement-Ln86-Item-Ln86" : {
-      "type" : "string",
-      "minLength" : 1
-    }
-  },
   "type" : "object",
   "additionalProperties" : false,
   "properties" : {
     "version_prefix" : {
-      "$ref" : "#/$defs/__ItemStatement-Ln56-Item-Ln56",
+      "type" : "string",
+      "minLength" : 1,
       "description" : "String that serves as a prefix before the version; this functionality can be used in the support of distinct versions within the same repository.",
       "default" : null
     },
@@ -48,7 +39,8 @@
     "main_branch_names" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/$defs/__ItemStatement-Ln86-Item-Ln86"
+        "type" : "string",
+        "minLength" : 1
       },
       "minItems" : 1,
       "description" : "Name of branches considered to be 'mainline' branches; branch information will not be included in the generated semantic version.",
@@ -57,6 +49,18 @@
         "master",
         "default"
       ]
+    },
+    "additional_dependencies" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string",
+        "minLength" : 1,
+        "__custom__" : {
+          "ensure_exists" : true,
+          "match_any" : true
+        }
+      },
+      "description" : "Normally, commits to files in this directory and below are used to calculate semantic versions. Sometimes, additional file and directory dependencies outside of this directory must be considered as well. Define those dependencies here."
     }
   },
   "required" : [

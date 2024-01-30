@@ -134,10 +134,17 @@ class TestGetConfiguration:
             configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         )
         assert configuration.version_prefix is None
+        assert configuration.additional_dependencies == []
 
     # ----------------------------------------------------------------------
     def test_Yaml(self, tmp_path_factory):
         root = tmp_path_factory.mktemp("root")
+
+        with (root / "one").open("w") as f:
+            pass
+
+        with (root / "two").open("w") as f:
+            pass
 
         with (root / "AutoGitSemVer.yaml").open("w") as f:
             f.write(
@@ -150,6 +157,7 @@ class TestGetConfiguration:
                         initial_version: 1.2.3,
                         main_branch_names: [ "foo", "bar" ],
                         prerelease_environment_variable_name: "BAZ",
+                        additional_dependencies: ["one", "two"]
                     }
                     """,
                 ),
@@ -165,6 +173,7 @@ class TestGetConfiguration:
         assert configuration.main_branch_names == ["foo", "bar"]
         assert configuration.prerelease_environment_variable_name == "BAZ"
         assert configuration.version_prefix is None
+        assert configuration.additional_dependencies == [root / "one", root / "two"]
 
     # ----------------------------------------------------------------------
     def test_Yml(self, tmp_path_factory):
@@ -195,6 +204,7 @@ class TestGetConfiguration:
             configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         )
         assert configuration.version_prefix == "Test-v"
+        assert configuration.additional_dependencies == []
 
     # ----------------------------------------------------------------------
     def test_Json(self, tmp_path_factory):
@@ -223,6 +233,7 @@ class TestGetConfiguration:
             configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         )
         assert configuration.version_prefix is None
+        assert configuration.additional_dependencies == []
 
     # ----------------------------------------------------------------------
     def test_Invalid(self, tmp_path_factory):
@@ -387,7 +398,7 @@ class TestSemanticVersion:
         assert result == 0
         assert semver.major == 0
         assert semver.minor == 1
-        assert semver.patch == 3
+        assert semver.patch == 2
 
     # ----------------------------------------------------------------------
     def test_Styles(self):

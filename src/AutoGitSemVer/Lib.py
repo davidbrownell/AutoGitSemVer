@@ -66,6 +66,8 @@ class Configuration:
     initial_version: SemVer
     main_branch_names: list[str]
 
+    additional_dependencies: list[Path]
+
     include_branch_name_when_necessary: bool = field(kw_only=True)
     include_timestamp_when_necessary: bool = field(kw_only=True)
     include_computer_name_when_necessary: bool = field(kw_only=True)
@@ -223,6 +225,30 @@ def GetSemanticVersion(
     ) as enumerate_dm:
         root_path = configuration.filename.parent if configuration.filename else repository_root
 
+        additional_dependency_lookup: set[Path] = set()
+
+        for additional_dependency in configuration.additional_dependencies:
+            if additional_dependency.is_file():
+                additional_dependency_lookup.add(additional_dependency)
+                continue
+
+            if additional_dependency.is_dir():
+                for ad_root, _, ad_filenames in os.walk(additional_dependency):
+                    ad_root_path = Path(ad_root)
+
+                    for ad_filename in ad_filenames:
+                        additional_dependency_lookup.add(ad_root_path / ad_filename)
+
+                continue
+
+            assert False, additional_dependency  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        def IsAdditionalDependency(
+            filename: Path,
+        ) -> bool:
+            return filename in additional_dependency_lookup
+
         # ----------------------------------------------------------------------
         def GetConfigurationPathForFile(
             filename: Path,
@@ -239,10 +265,12 @@ def GetSemanticVersion(
             commit: CommitInfo,
         ) -> bool:
             for filename in commit.files:
+                fullpath = repository_root / filename
+
                 if (
-                    PathEx.IsDescendant(repository_root / filename, root_path)
-                    and GetConfigurationPathForFile(repository_root / filename) == root_path
-                ):
+                    PathEx.IsDescendant(fullpath, root_path)
+                    and GetConfigurationPathForFile(fullpath) == root_path
+                ) or IsAdditionalDependency(fullpath):
                     return True
 
             return False
@@ -495,12 +523,24 @@ def GetConfiguration(
     # Validate the configuration data
     validator.validate(configuration_content)
 
+    additional_dependencies: list[Path] = []
+
+    if configuration_filename is not None:
+        for additional_dependency in configuration_content.get("additional_dependencies", []):
+            fullpath = (configuration_filename.parent / additional_dependency).resolve()
+
+            if not fullpath.exists():
+                raise Exception("The additional dependency '{}' does not exist.".format(fullpath))
+
+            additional_dependencies.append(fullpath)
+
     return Configuration(
         configuration_filename,
         configuration_content.get("version_prefix", None),
         configuration_content["prerelease_environment_variable_name"],
         SemVer.coerce(configuration_content["initial_version"]),
         configuration_content["main_branch_names"],
+        additional_dependencies,
         include_branch_name_when_necessary=configuration_content[
             "include_branch_name_when_necessary"
         ],

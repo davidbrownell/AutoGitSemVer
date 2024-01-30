@@ -14,12 +14,12 @@
 # |
 # ----------------------------------------------------------------------
 
-# Configuration file for AutoSemVer. Place json files anywhere under a repository to modify how
+# Configuration file for AutoGitSemVer. Place json files anywhere under a repository to modify how
 # semantic versions are generated.
 #
 # To generate a single sematic version for the entire repository:
 #
-#    - Place a single configuration file in the root of the repository (e.g. `<repo_root>/AutoSemVer.json`) -
+#    - Place a single configuration file in the root of the repository (e.g. `<repo_root>/AutoGitSemVer.json`) -
 #
 #        - or -
 #
@@ -30,13 +30,13 @@
 #
 #    <repo_root>
 #    |-- Directory1
-#    |   |-- AutoSemVer.json
+#    |   |-- AutoGitSemVer.json
 #    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
-#    |   |    will be controlled by this AutoSemVer.json file>
+#    |   |    will be controlled by this AutoGitSemVer.json file>
 #    |-- Directory2
-#    |   |-- AutoSemVer.json
+#    |   |-- AutoGitSemVer.json
 #    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
-#    |   |    will be controlled by this AutoSemVer.json file>
+#    |   |    will be controlled by this AutoGitSemVer.json file>
 #    |-- <Changes in this directory will not impact either semantic version>
 #
 
@@ -90,4 +90,10 @@ main_branch_names: String+ {
         "default",
     ]
     description: "Name of branches considered to be 'mainline' branches; branch information will not be included in the generated semantic version."
+}
+
+additional_dependencies: Filename* {
+    ensure_exists: true
+    match_any: true
+    description: "Normally, commits to files in this directory and below are used to calculate semantic versions. Sometimes, additional file and directory dependencies outside of this directory must be considered as well. Define those dependencies here."
 }
