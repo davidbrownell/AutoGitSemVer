@@ -59,6 +59,19 @@ jobs:
       python_version: ${{ matrix.python_version }}
 
   # ----------------------------------------------------------------------
+  package_coverage:
+    needs: validate
+
+    name: Postprocess Coverage Info
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_package_coverage.yaml@main
+    with:
+      gist_id: f15146b1b8fdc0a5d45ac0eb786a84f7
+      gist_filename: AutoGitSemVer.json
+    secrets: inherit
+
+  # ----------------------------------------------------------------------
   package:
     needs: validate
 
