@@ -611,7 +611,12 @@ def EnumCommits(
     git_tags: dict[str, list[git.Tag]] = {}
 
     for tag in repo.tags:
-        git_tags.setdefault(tag.commit.hexsha, []).append(tag)
+        # Tags are most often associated with merges into a mainline branch, but we are filtering merges
+        # out in the code below. Therefore, associate the tag with a parent that isn't a merge commit.
+        for parent in tag.commit.parents:
+            if len(parent.parents) == 1:
+                git_tags.setdefault(parent.hexsha, []).append(tag)
+                break
 
     offset = 0
 
@@ -627,26 +632,12 @@ def EnumCommits(
             if len(commit.parents) > 1:
                 continue
 
-            # Tags are most often associated with merges into a mainline branch, but we have filtered commits
-            # to only those that have a single parent (in other words, that aren't merges). Therefore, look
-            # at parents that represent a merge into a mainline branch when associating tags with commits.
-            this_tags = git_tags.get(commit.hexsha, None)
-            if this_tags is None:
-                for parent in commit.parents:
-                    # Skip non-merge parents
-                    if len(parent.parents) == 1:
-                        continue
-
-                    this_tags = git_tags.get(parent.hexsha, None)
-                    if this_tags is not None:
-                        break
-
             assert isinstance(commit.message, str), commit.message
 
             yield CommitInfo(
                 commit.hexsha,
                 commit.message,
-                [tag.name for tag in this_tags] if this_tags is not None else [],
+                [tag.name for tag in git_tags.get(commit.hexsha, [])],
                 commit.author.name or "",
                 commit.authored_datetime,
                 [PurePath(path) for path in commit.stats.files],
