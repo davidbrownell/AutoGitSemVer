@@ -28,7 +28,7 @@ from dbrownell_Common.Streams.DoneManager import DoneManager, Flags as DoneManag
 from dbrownell_Common.Streams.StreamDecorator import TextWriterT  # type: ignore [import-untyped]
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
-from AutoGitSemVer import GenerateStyle, GetSemanticVersion, GetSemanticVersionResult
+from AutoGitSemVer import GenerateStyle, GetSemanticVersion, GetSemanticVersionResult, __version__
 
 
 # ----------------------------------------------------------------------
@@ -122,7 +122,18 @@ def Generate(
             help="Do not display any information other than the generated semantic version.",
         ),
     ] = False,
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            help="Display the version of this tool and exit.",
+        ),
+    ] = False,
 ) -> None:
+    if version:
+        sys.stdout.write("autogitsemver v{}\n".format(__version__))
+        sys.exit(0)
+
     output_stream: Optional[TextWriterT] = None
     postprocess_func: Optional[
         Callable[[DoneManager, Optional[GetSemanticVersionResult]], None]

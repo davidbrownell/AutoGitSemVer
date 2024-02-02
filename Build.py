@@ -65,6 +65,7 @@ UpdateVersion = RepoBuildTools.UpdateVersionFuncFactory(
 )
 Package = RepoBuildTools.PackageFuncFactory(this_dir, app)
 Publish = RepoBuildTools.PublishFuncFactory(this_dir, app)
+BuildBinary = RepoBuildTools.BuildBinaryFuncFactory(this_dir, app)
 
 
 # ----------------------------------------------------------------------

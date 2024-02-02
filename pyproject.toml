@@ -77,6 +77,7 @@ dev = [
 
 package = [
     "build == 1.*",
+    "cx_Freeze == 6.*",
     "twine == 4.*",
 ]
 

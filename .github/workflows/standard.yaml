@@ -31,7 +31,7 @@ jobs:
   # ----------------------------------------------------------------------
   action_contexts:
     name: "Display GitHub Action Contexts"
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_action_contexts.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_display_action_contexts.yaml@main
 
   # ----------------------------------------------------------------------
   validate:
@@ -53,26 +53,26 @@ jobs:
 
     name: Validate
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_validate.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@main
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
 
   # ----------------------------------------------------------------------
-  package_coverage:
+  coverage:
     needs: validate
 
     name: Postprocess Coverage Info
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_package_coverage.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@main
     with:
       gist_id: f15146b1b8fdc0a5d45ac0eb786a84f7
       gist_filename: AutoGitSemVer_coverage.json
     secrets: inherit
 
   # ----------------------------------------------------------------------
-  package:
+  create_package:
     needs: validate
 
     strategy:
@@ -91,18 +91,95 @@ jobs:
           # - "3.9"  # Not supported
           # - "3.8"  # Not supported
 
-    name: Package
+    name: Create Package
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_package.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@main
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
 
   # ----------------------------------------------------------------------
+  validate_package:
+    needs: create_package
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+        python_version:
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          # - "3.9"  # Not supported
+          # - "3.8"  # Not supported
+
+    name: Validate Package
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@main
+    with:
+      operating_system: ${{ matrix.os }}
+      python_version: ${{ matrix.python_version }}
+      validation_command: autogitsemver --version
+
+  # ----------------------------------------------------------------------
+  create_binary:
+    needs: validate
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+        python_version:
+          - "3.11"
+
+    name: Create Binary
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@main
+    with:
+      operating_system: ${{ matrix.os }}
+      python_version: ${{ matrix.python_version }}
+
+  # ----------------------------------------------------------------------
+  validate_binary:
+    needs: create_binary
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+        python_version:
+          - "3.11"
+
+    name: Validate Binary
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@main
+    with:
+      operating_system: ${{ matrix.os }}
+      python_version: ${{ matrix.python_version }}
+      validation_command: AutoGitSemVer --version
+
+  # ----------------------------------------------------------------------
   publish:
-    needs: package
+    needs:
+      - validate_package
+      - validate_binary
 
     name: Publish
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_python_publish.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@main
     secrets: inherit

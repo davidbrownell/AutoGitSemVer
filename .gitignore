@@ -4,6 +4,7 @@ Deactivate*.cmd
 Deactivate*.sh
 
 Generated/**
+build/**
 dist/**
 src/AutoGitSemVer.egg-info/**
 .vscode/**
