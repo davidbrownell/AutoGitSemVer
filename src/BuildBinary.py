@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  build_binary.py
+# |  BuildBinary.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2024-02-01 11:32:18
@@ -28,7 +28,7 @@ from dbrownell_Common import PathEx
 # ----------------------------------------------------------------------
 _name = "AutoGitSemVer"
 _initial_year = 2024
-_entry_point_script = PathEx.EnsureFile(Path(__file__).parent / "src" / _name / "EntryPoint.py")
+_entry_point_script = PathEx.EnsureFile(Path(__file__).parent / _name / "EntryPoint.py")
 _copyright_template = textwrap.dedent(
     """\
     Copyright David Brownell {year}{year_suffix}
