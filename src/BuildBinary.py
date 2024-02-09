@@ -8,9 +8,7 @@
 # ----------------------------------------------------------------------
 # |
 # |  Copyright David Brownell 2024
-# |  Distributed under the Boost Software License, Version 1.0. See
-# |  accompanying file LICENSE_1_0.txt or copy at
-# |  http://www.boost.org/LICENSE_1_0.txt.
+# |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
 """Builds an executable"""
@@ -32,8 +30,7 @@ _entry_point_script = PathEx.EnsureFile(Path(__file__).parent / _name / "EntryPo
 _copyright_template = textwrap.dedent(
     """\
     Copyright David Brownell {year}{year_suffix}
-    Distributed under the Boost Software License, Version 1.0. See
-    copy at http://www.boost.org/LICENSE_1_0.txt.
+    Distributed under the MIT License.
     """,
 )
 
