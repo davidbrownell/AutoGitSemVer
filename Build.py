@@ -21,6 +21,7 @@ from pathlib import Path
 
 import typer
 
+from dbrownell_Common import PathEx  # type: ignore [import-untyped]
 from dbrownell_DevTools.RepoBuildTools import Python as RepoBuildTools  # type: ignore [import-untyped]
 from typer.core import TyperGroup
 
@@ -34,14 +35,9 @@ class NaturalOrderGrouper(TyperGroup):
 
 
 # ----------------------------------------------------------------------
-this_dir = Path(__file__).parent
-assert this_dir.is_dir(), this_dir
-
-src_dir = this_dir / "src" / "AutoGitSemVer"
-assert src_dir.is_dir(), src_dir
-
-tests_dir = this_dir / "tests"
-assert tests_dir.is_dir(), tests_dir
+this_dir = PathEx.EnsureDir(Path(__file__).parent)
+src_dir = PathEx.EnsureDir(this_dir / "src" / "AutoGitSemVer")
+tests_dir = PathEx.EnsureDir(this_dir / "tests")
 
 
 # ----------------------------------------------------------------------
@@ -65,7 +61,11 @@ UpdateVersion = RepoBuildTools.UpdateVersionFuncFactory(
 )
 Package = RepoBuildTools.PackageFuncFactory(this_dir, app)
 Publish = RepoBuildTools.PublishFuncFactory(this_dir, app)
-BuildBinary = RepoBuildTools.BuildBinaryFuncFactory(this_dir, app)
+BuildBinary = RepoBuildTools.BuildBinaryFuncFactory(
+    this_dir,
+    PathEx.EnsureFile(this_dir / "src" / "BuildBinary.py"),
+    app,
+)
 
 
 # ----------------------------------------------------------------------
