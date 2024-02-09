@@ -7,10 +7,8 @@
 # |
 # ----------------------------------------------------------------------
 # |
-# |  Copyright David Brownell 2023
-# |  Distributed under the Boost Software License, Version 1.0. See
-# |  accompanying file LICENSE_1_0.txt or copy at
-# |  http://www.boost.org/LICENSE_1_0.txt.
+# |  Copyright David Brownell 2023-24
+# |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
 # https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
@@ -27,7 +25,7 @@ build-backend = "setuptools.build_meta"
 name = "AutoGitSemVer"
 description = "Calculates a semantic version based on git changes."
 
-license = { text = "Boost Software License 1.0" }
+license = { text = "MIT License" }
 
 authors = [
     { name = "David Brownell", email = "db@DavidBrownell.com" },
@@ -41,7 +39,7 @@ keywords = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Common Public License",
+    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
