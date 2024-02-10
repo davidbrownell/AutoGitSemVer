@@ -11,7 +11,7 @@
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
-import os
+import subprocess
 import sys
 
 # Parse the arguments
@@ -40,9 +40,11 @@ for arg in sys.argv[
 if is_debug:
     is_verbose = True
 
-os.system(
+subprocess.run(
     'pip install --disable-pip-version-check {} --editable ".[dev{}]"'.format(
         "--no-cache-dir" if no_cache else "",
         ", package" if is_package else "",
-    )
+    ),
+    check=True,
+    shell=True,
 )
