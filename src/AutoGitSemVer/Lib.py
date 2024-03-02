@@ -91,6 +91,7 @@ class GetSemanticVersionResult:
 
     configuration_filename: Optional[Path]
     semantic_version: SemVer
+    semantic_version_string: str
 
 
 # ----------------------------------------------------------------------
@@ -462,9 +463,11 @@ def GetSemanticVersion(
             build=None if no_metadata else tuple(metadata),
         )
 
-        calculate_dm.WriteLine(str(semver))
+        semver_string = f"{configuration.version_prefix}{semver}"
 
-    return GetSemanticVersionResult(configuration.filename, semver)
+        calculate_dm.WriteLine(semver_string)
+
+    return GetSemanticVersionResult(configuration.filename, semver, semver_string)
 
 
 # ----------------------------------------------------------------------
