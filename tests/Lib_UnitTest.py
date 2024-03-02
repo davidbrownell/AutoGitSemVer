@@ -262,18 +262,18 @@ class TestSemanticVersion:
         result, semver = _GetSemanticVersionImpl([])
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
 
     # ----------------------------------------------------------------------
     def test_Single(self):
         result, semver = _GetSemanticVersionImpl([_CreateCommitInfo("Commit 1")])
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
 
     # ----------------------------------------------------------------------
     def test_Multiple(self):
@@ -286,9 +286,9 @@ class TestSemanticVersion:
         result, semver = _GetSemanticVersionImpl(commits)
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == len(commits) - 1
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == len(commits) - 1
 
     # ----------------------------------------------------------------------
     def test_BumpMinor(self):
@@ -302,9 +302,9 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 1
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 1
 
     # ----------------------------------------------------------------------
     def test_BumpMajor(self):
@@ -320,9 +320,9 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 1
-        assert semver.minor == 1
-        assert semver.patch == 1
+        assert semver.semantic_version.major == 1
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 1
 
     # ----------------------------------------------------------------------
     def test_Feature(self):
@@ -335,9 +335,9 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 3
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 3
+        assert semver.semantic_version.patch == 0
 
     # ----------------------------------------------------------------------
     def test_WithTag(self):
@@ -351,9 +351,9 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 2
-        assert semver.minor == 0
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 2
+        assert semver.semantic_version.minor == 0
+        assert semver.semantic_version.patch == 0
 
     # ----------------------------------------------------------------------
     def test_WithTag2(self):
@@ -365,19 +365,22 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 1
-        assert semver.minor == 2
-        assert semver.patch == 4
+        assert semver.semantic_version.major == 1
+        assert semver.semantic_version.minor == 2
+        assert semver.semantic_version.patch == 4
 
     # ----------------------------------------------------------------------
     def test_PrereleaseName(self):
         result, semver = _GetSemanticVersionImpl([], prerelease_name="MyPrereleaseName")
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
-        assert semver.prerelease and semver.prerelease[0] == "MyPrereleaseName"
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
+        assert (
+            semver.semantic_version.prerelease
+            and semver.semantic_version.prerelease[0] == "MyPrereleaseName"
+        )
 
     # ----------------------------------------------------------------------
     def test_IgnoredChanges(self):
@@ -394,9 +397,9 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 2
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 2
 
     # ----------------------------------------------------------------------
     def test_Styles(self):
@@ -408,15 +411,18 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
 
-        assert semver.prerelease is not None and len(semver.prerelease) >= 1
-        standard_prerelease = semver.prerelease
+        assert (
+            semver.semantic_version.prerelease is not None
+            and len(semver.semantic_version.prerelease) >= 1
+        )
+        standard_prerelease = semver.semantic_version.prerelease
 
-        assert semver.build is not None and len(semver.build) >= 1
-        standard_build = semver.build
+        assert semver.semantic_version.build is not None and len(semver.semantic_version.build) >= 1
+        standard_build = semver.semantic_version.build
 
         # AllPrerelease
         result, semver = _GetSemanticVersionImpl(
@@ -426,14 +432,15 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
 
-        assert semver.prerelease is not None and (
-            len(semver.prerelease) == len(standard_prerelease) + len(standard_build)
+        assert semver.semantic_version.prerelease is not None and (
+            len(semver.semantic_version.prerelease)
+            == len(standard_prerelease) + len(standard_build)
         )
-        assert semver.build == ()
+        assert semver.semantic_version.build == ()
 
         # AllMetadata
         result, semver = _GetSemanticVersionImpl(
@@ -443,13 +450,13 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 0
-        assert semver.minor == 1
-        assert semver.patch == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
 
-        assert semver.prerelease == ()
-        assert semver.build is not None and (
-            len(semver.build) == len(standard_prerelease) + len(standard_build)
+        assert semver.semantic_version.prerelease == ()
+        assert semver.semantic_version.build is not None and (
+            len(semver.semantic_version.build) == len(standard_prerelease) + len(standard_build)
         )
 
     # ----------------------------------------------------------------------
@@ -481,16 +488,18 @@ class TestSemanticVersion:
         )
 
         assert result == 0
-        assert semver.major == 1000
-        assert semver.minor == 100
-        assert semver.patch == 10
+        assert semver.semantic_version.major == 1000
+        assert semver.semantic_version.minor == 100
+        assert semver.semantic_version.patch == 10
         assert (
-            semver.prerelease is None or "bumped_major" not in semver.prerelease
+            semver.semantic_version.prerelease is None
+            or "bumped_major" not in semver.semantic_version.prerelease
         )  # prerelease is wiped when a new version is encountered
         assert (
-            semver.prerelease is None or "bumped_minor" not in semver.prerelease
+            semver.semantic_version.prerelease is None
+            or "bumped_minor" not in semver.semantic_version.prerelease
         )  # prerelease is wiped when a new version is encountered
-        assert semver.build and "bumped_patch" in semver.build
+        assert semver.semantic_version.build and "bumped_patch" in semver.semantic_version.build
 
 
 # ----------------------------------------------------------------------
@@ -517,11 +526,11 @@ def _GetSemanticVersionImpl(
     *,
     working_dir: Path = Path.cwd(),
     **kwargs,
-) -> tuple[int, SemVer]:
+) -> tuple[int, GetSemanticVersionResult]:
     with patch("AutoGitSemVer.Lib.EnumCommits", return_value=commits):
         sink = StringIO()
 
         with DoneManager.Create(sink, "_GetSemanticVersionImpl...") as dm:
             result = GetSemanticVersion(dm, working_dir, **kwargs)
 
-        return dm.result, result.semantic_version
+        return dm.result, result

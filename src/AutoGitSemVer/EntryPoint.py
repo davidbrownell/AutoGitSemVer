@@ -151,7 +151,7 @@ def Generate(
                 sys.stdout.write(sink.getvalue())
             else:
                 assert result is not None
-                sys.stdout.write(str(result.semantic_version))
+                sys.stdout.write(result.semantic_version_string)
 
         # ----------------------------------------------------------------------
 
