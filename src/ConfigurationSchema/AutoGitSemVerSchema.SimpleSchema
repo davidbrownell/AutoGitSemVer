@@ -32,9 +32,9 @@
 #    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
 #    |   |    will be controlled by this AutoGitSemVer.json file>
 #    |-- Directory2
-#    |   |-- AutoGitSemVer.json
+#    |   |-- AutoGitSemVer.yaml
 #    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
-#    |   |    will be controlled by this AutoGitSemVer.json file>
+#    |   |    will be controlled by this AutoGitSemVer.yaml file>
 #    |-- <Changes in this directory will not impact either semantic version>
 #
 
