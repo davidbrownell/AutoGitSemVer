@@ -501,6 +501,25 @@ class TestSemanticVersion:
         )  # prerelease is wiped when a new version is encountered
         assert semver.semantic_version.build and "bumped_patch" in semver.semantic_version.build
 
+    # ----------------------------------------------------------------------
+    def test_String(self):
+        result, semver = _GetSemanticVersionImpl([])
+
+        assert result == 0
+        assert semver.semantic_version.major == 0
+        assert semver.semantic_version.minor == 1
+        assert semver.semantic_version.patch == 0
+        assert semver.semantic_version_string != "0.1.0"
+
+        result, semver = _GetSemanticVersionImpl(
+            [],
+            include_branch_name_when_necessary=False,
+            include_timestamp_when_necessary=False,
+            include_computer_name_when_necessary=False,
+            no_metadata=True,
+        )
+        assert semver.semantic_version_string == "0.1.0"
+
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------

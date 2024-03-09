@@ -463,7 +463,7 @@ def GetSemanticVersion(
             build=None if no_metadata else tuple(metadata),
         )
 
-        semver_string = f"{configuration.version_prefix}{semver}"
+        semver_string = f"{configuration.version_prefix or ''}{semver}"
 
         calculate_dm.WriteLine(semver_string)
 
@@ -614,10 +614,15 @@ def EnumCommits(
     for tag in repo.tags:
         # Tags are most often associated with merges into a mainline branch, but we are filtering merges
         # out in the code below. Therefore, associate the tag with a parent that isn't a merge commit.
-        for parent in tag.commit.parents:
-            if len(parent.parents) == 1:
-                git_tags.setdefault(parent.hexsha, []).append(tag)
-                break
+        if len(tag.commit.parents) == 1:
+            # We are looking at a direct commit to the branch
+            git_tags.setdefault(tag.commit.hexsha, []).append(tag)
+        else:
+            # We are looking at a merge
+            for parent in tag.commit.parents:
+                if len(parent.parents) == 1:
+                    git_tags.setdefault(parent.hexsha, []).append(tag)
+                    break
 
     offset = 0
 
