@@ -28,13 +28,13 @@
 #
 #    <repo_root>
 #    |-- Directory1
-#    |   |-- AutoGitSemVer.json
-#    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
-#    |   |    will be controlled by this AutoGitSemVer.json file>
+#        |-- AutoGitSemVer.json
+#        |-- <Semantic versions based on changes to any files in this directory or its descendants
+#             will be controlled by this AutoGitSemVer.json file>
 #    |-- Directory2
-#    |   |-- AutoGitSemVer.yaml
-#    |   |-- <Semantic versions based on changes to any files in this directory or its descendants
-#    |   |    will be controlled by this AutoGitSemVer.yaml file>
+#        |-- AutoGitSemVer.yaml
+#        |-- <Semantic versions based on changes to any files in this directory or its descendants
+#             will be controlled by this AutoGitSemVer.yaml file>
 #    |-- <Changes in this directory will not impact either semantic version>
 #
 

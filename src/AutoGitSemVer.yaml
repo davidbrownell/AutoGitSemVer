@@ -1,3 +1,5 @@
+# Changes to any file in this directory or its descendants will trigger a new semantic version. In
+# addition, any changes to the following files will also trigger a new version.
 additional_dependencies:
   - "../pyproject.toml"
   - "../README.md"
