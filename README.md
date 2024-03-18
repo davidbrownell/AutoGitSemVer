@@ -31,6 +31,11 @@ From a terminal window, run:
 
 <table>
     <tr>
+        <th>Scenario</th>
+        <th>Command Line</th>
+        <th>Output</th>
+    </tr>
+    <tr>
         <td>Standard</td>
         <td><code>autogitsemver</code></td>
         <td>
@@ -149,6 +154,7 @@ Changes to each of these numbers convey different meanings to those who have tak
 
 By default, AutoGitSemVer will increment the `patch` number for each git commit encountered.
 
+##### Customizing the Update
 The following tokens can be added anywhere in a git commit's title or description to increment the `major`, `minor`, or `patch` numbers:
 
 | Semantic Version Number | Git Comment Token(s) | Example |
@@ -161,19 +167,23 @@ The following tokens can be added anywhere in a git commit's title or descriptio
 
 ###### Description
 
-Git Commit Title: `Added feature Foo`
-Git Commit Description: `Foo lets a user... +minor`
+| | |
+|-|-|
+| Git Commit Title: | `Added feature Foo` |
+| Git Commit Description: | `Foo lets a user... +minor` |
 
 ###### Title
 
-Git Commit Title: `Added feature Foo (+minor)`
-Git Commit Description: `Foo lets a user...`
+| | |
+|-|-|
+| Git Commit Title: | `Added feature Foo (+minor)` |
+| Git Commit Description: | `Foo lets a user...` |
 
 ## Installation via Executable
 
 Download an executable for Linux, MacOS, or Windows to use the functionality provided by this repository without a dependency on [Python](https://www.python.org).
 
-1. Download the archive for the latest release [here](https://github.com/gt-sse-center/AutoGitSemVer/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
+1. Download the archive for the latest release [here](https://github.com/davidbrownell/AutoGitSemVer/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
 2. Decompress the archive
 
 ## Installation via pip
