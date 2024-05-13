@@ -29,7 +29,7 @@ jobs:
   # ----------------------------------------------------------------------
   action_contexts:
     name: "Display GitHub Action Contexts"
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_display_action_contexts.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_display_action_contexts.yaml@CI-v0.15.5
 
   # ----------------------------------------------------------------------
   validate:
@@ -51,7 +51,7 @@ jobs:
 
     name: Validate
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@CI-v0.15.5
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
@@ -63,7 +63,7 @@ jobs:
     name: Postprocess Coverage Info
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@CI-v0.15.5
     with:
       gist_id: f15146b1b8fdc0a5d45ac0eb786a84f7
       gist_filename: AutoGitSemVer_coverage.json
@@ -91,7 +91,7 @@ jobs:
 
     name: Create Package
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@CI-v0.15.5
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
@@ -118,7 +118,7 @@ jobs:
 
     name: Validate Package
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@CI-v0.15.5
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
@@ -142,7 +142,7 @@ jobs:
 
     name: Create Binary
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@CI-v0.15.5
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
@@ -165,7 +165,7 @@ jobs:
 
     name: Validate Binary
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@CI-v0.15.5
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
@@ -179,7 +179,7 @@ jobs:
 
     name: Publish
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@main
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@CI-v0.15.5
     with:
       release_sources_configuration_filename: .github/release_sources.yaml
     secrets: inherit
