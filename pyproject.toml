@@ -185,5 +185,8 @@ python_files = [
 [tool.setuptools.dynamic]
 version = { attr = "AutoGitSemVer.__version__" }
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.setuptools.package-data]
 AutoGitSemVer = ["*.json", ]
