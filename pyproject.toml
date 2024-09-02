@@ -1,17 +1,5 @@
-# ----------------------------------------------------------------------
-# |
-# |  pyproject.toml
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2023-12-18 15:22:11
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2023-24
-# |  Distributed under the MIT License.
-# |
-# ----------------------------------------------------------------------
 # https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+
 [build-system]
 requires = ["setuptools >= 63.0"]
 build-backend = "setuptools.build_meta"
@@ -23,16 +11,16 @@ build-backend = "setuptools.build_meta"
 # ----------------------------------------------------------------------
 [project]
 name = "AutoGitSemVer"
-description = "Calculates a semantic version based on git changes."
+description = "Generate a semantic version based on commits made to a git repository."
 
-license = { text = "MIT License" }
+license = { text = "MIT" }
 
 authors = [
-    { name = "David Brownell", email = "db@DavidBrownell.com" },
+    { name = "David Brownell", email = "github@DavidBrownell.com" },
 ]
 
 keywords = [
-    # TODO
+    # TODO: Add keywords specific to your project.
 ]
 
 # https://pypi.org/classifiers/
@@ -55,7 +43,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "dbrownell_Common == 0.*",
+    "dbrownell_Common",
     "GitPython ~= 3.1",
     "jsonschema ~= 4.21",
     "rtyaml ~= 1.0",
@@ -70,7 +58,7 @@ readme = "README.md"
 
 [project.optional-dependencies]
 dev = [
-    "dbrownell_DevTools == 0.*",
+    "dbrownell_DevTools",
 ]
 
 package = [
@@ -79,17 +67,19 @@ package = [
     "twine ~= 5.1",
 ]
 
-[project.scripts]
-autogitsemver = "AutoGitSemVer:EntryPoint.app"
-
 [project.urls]
 Homepage = "https://github.com/davidbrownell/AutoGitSemVer"
 Documentation = "https://github.com/davidbrownell/AutoGitSemVer"
 Repository = "https://github.com/davidbrownell/AutoGitSemVer"
 
+
+[project.scripts]
+AutoGitSemVer = "AutoGitSemVer:EntryPoint.app"
+autogitsemver = "AutoGitSemVer:EntryPoint.app"
+
 # ----------------------------------------------------------------------
 # |
-# |  Black
+# |  black
 # |
 # ----------------------------------------------------------------------
 [tool.black]
@@ -97,7 +87,7 @@ line-length = 100
 
 # ----------------------------------------------------------------------
 # |
-# |  Pylint
+# |  pylint
 # |
 # ----------------------------------------------------------------------
 [tool.pylint.basic]
@@ -121,7 +111,7 @@ max-args = 10
 max-parents = 15
 
 [tool.pylint.main]
-ignore-patterns = [
+ignore-paths = [
     # Note that the pylint vscode extension has trouble with wrapping these patterns in quotes
     # (which is required to parse the file correctly). Because of this, each pattern must be
     # converted to a glob pattern and specified in the pylint vscode settings as well.
@@ -155,7 +145,7 @@ disable = [
 
 # ----------------------------------------------------------------------
 # |
-# |  Pyright
+# |  pyright
 # |
 # ----------------------------------------------------------------------
 [tool.pyright]
@@ -169,7 +159,7 @@ reportMissingTypeStubs = false
 
 # ----------------------------------------------------------------------
 # |
-# |  Pytest
+# |  pytest
 # |
 # ----------------------------------------------------------------------
 [tool.pytest.ini_options]
@@ -179,7 +169,7 @@ python_files = [
 
 # ----------------------------------------------------------------------
 # |
-# |  Setuptools
+# |  setuptools
 # |
 # ----------------------------------------------------------------------
 [tool.setuptools.dynamic]

@@ -1,30 +1,30 @@
 # AutoGitSemVer
 
-[![CI](https://github.com/davidbrownell/AutoGitSemVer/actions/workflows/standard.yaml/badge.svg?event=push)](https://github.com/davidbrownell/AutoGitSemVer/actions/workflows/standard.yaml)
-[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/davidbrownell/f15146b1b8fdc0a5d45ac0eb786a84f7/raw/AutoGitSemVer_coverage.json)](https://github.com/davidbrownell/AutoGitSemVer/actions)
+<!-- BEGIN: Exclude Package -->
 [![License](https://img.shields.io/github/license/davidbrownell/AutoGitSemVer?color=dark-green)](https://github.com/davidbrownell/AutoGitSemVer/blob/master/LICENSE.txt)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/davidbrownell/AutoGitSemVer?color=dark-green)](https://github.com/davidbrownell/AutoGitSemVer/commits/main/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/AutoGitSemVer?color=dark-green)](https://pypi.org/project/autogitsemver/)
-[![PyPI - Version](https://img.shields.io/pypi/v/AutoGitSemVer?color=dark-green)](https://pypi.org/project/autogitsemver/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/AutoGitSemVer)](https://pypistats.org/packages/autogitsemver)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
+[![PyPI - Version](https://img.shields.io/pypi/v/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/AutoGitSemVer)](https://pypistats.org/packages/AutoGitSemVer)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9043/badge)](https://www.bestpractices.dev/projects/9043)
+[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/davidbrownell/f15146b1b8fdc0a5d45ac0eb786a84f7/raw/AutoGitSemVer_coverage.json)](https://github.com/davidbrownell/AutoGitSemVer/actions)
+<!-- END: Exclude Package -->
 
+Generate a semantic version based on commits made to a git repository.
 
-# AutoGitSemVer
+<!-- BEGIN: Exclude Package -->
+## Contents
+- [Overview](#overview)
+- [Installation](#installation)
+- [Development](#development)
+- [Additional Information](#additional-information)
+- [License](#license)
+<!-- END: Exclude Package -->
 
-Generate a [semantic version](https://semver.og) based on commits made to a [git](https://git-scm.com/) repository.
-
-### Quick Start
-
-1. Install via [executable](#installation-via-executable), [pip](#installation-via-pip), or [local development](#local-development)
-2. [Run the executable](#running-the-executable)
-3. [Advanced Configuration](#advanced-configuration)
-
-### Overview
-
+## Overview
 AutoGitSemVer uses commits in a git repository to calculate a semantic version. A commit's title and/or description can be used to increment a specific part of the semantic version and configuration files can be applied to control how the semantic version is generated. Finally, multiple, distinct semantic versions can be generated from different directories within the source tree.
 
 ### How to use AutoGitSemVer
-
 #### Running the Executable
 
 From a terminal window, run:
@@ -165,68 +165,23 @@ The following tokens can be added anywhere in a git commit's title or descriptio
 
 ##### Examples
 
-###### Description
+###### Modifier in the Description
 
 | | |
 |-|-|
 | Git Commit Title: | `Added feature Foo` |
 | Git Commit Description: | `Foo lets a user... +minor` |
 
-###### Title
+###### Modifier in the Title
 
 | | |
 |-|-|
 | Git Commit Title: | `Added feature Foo (+minor)` |
 | Git Commit Description: | `Foo lets a user...` |
 
-## Installation via Executable
+#### Advanced Configuration
 
-Download an executable for Linux, MacOS, or Windows to use the functionality provided by this repository without a dependency on [Python](https://www.python.org).
-
-1. Download the archive for the latest release [here](https://github.com/davidbrownell/AutoGitSemVer/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
-2. Decompress the archive
-
-## Installation via pip
-
-Install the AutoGitSemVer package via [pip](https://pip.pypa.io/en/stable/) (Package Installer for Python) to use it with your python code.
-
-`pip install AutoGitSemVer`
-
-## Local Development
-
-Follow these steps to prepare the repository for local development activities.
-
-1) Clone this repository
-2) Bootstrap the local repository by running...
-    | Operating System | Command |
-    | --- | --- |
-    | Linux / MacOS | <p>Standard:<br/>`Bootstrap.sh`</p><p>Standard + packaging:<br/>`Bootstrap.sh --package`</p> |
-    | Windows | <p>Standard:<br/>`Bootstrap.cmd`</p><p>Standard + packaging:<br/>`Bootstrap.cmd --package`</p> |
-3) Activate the development environment by running...
-    | Operating System | Command |
-    | --- | --- |
-    | Linux / MacOS | `. ./Activate.sh` |
-    | Windows | `Activate.cmd` |
-4) Invoke `Build.py`
-    | Command | Description | Example | Notes |
-    | --- | --- | --- | --- |
-    | `black` | Validates that the source code is formatted by [black](https://github.com/psf/black). | <p>Validation:<br/>`python Build.py black`</p><p>Perform formatting:<br/>`python Build.py black --format`</p> | |
-    | `pylint` | Validates the source code using [pylint](https://github.com/pylint-dev/pylint). | `python Build.py pylint` | |
-    | `pytest` | Runs automated tests using [pytest](https://docs.pytest.org/). | <p>Without Code Coverage:<br/>`python Build.py pytest`</p><p>With Code Coverage:<br/>`python Build.py pytest --code-coverage`</p> | |
-    | `update_version` | Updates the [semantic version](https://semver.org/) of the package based on git commits using [AutoGitSemVer](https://github.com/davidbrownell/AutoGitSemVer). | `python Build.py update_version` | |
-    | `package` | Creates a Python wheel package for distribution; outputs to the `/dist` directory. | `python Build.py package` | Requires `--package` when bootstrapping in step #2. |
-    | `publish` | Publishes a Python wheel package to [PyPi](https://pypi.org/). | <p>https://test.pypi.org:<br/>`python Build.py publish`</p><p>https://pypi.org:<br/>`python Build.py publish --production`</p> | Requires `--package` when bootstrapping in step #2. |
-    | `build_binary` | Builds an executable for your package that can be run on machines without a python installation; outputs to the `/build` directory. | `python Build.py build_binary` | Requires `--package` when bootstrapping in step #2. |
-
-5) \[Optional] Deactivate the development environment by running...
-    | Operating System | Command |
-    | --- | --- |
-    | Linux / MacOS | `. ./Deactivate.sh` |
-    | Windows | `Deactivate.cmd` |
-
-## Advanced Configuration
-
-### Configuration Files
+##### Configuration Files
 
 The way in which semantic versions are generated can be customized through configuration files named:
 
@@ -234,7 +189,7 @@ The way in which semantic versions are generated can be customized through confi
 - `AutoGitSemVer.yaml`
 - `AutoGitSemVer.yml`
 
-This configuration files will impact the semantic versions generated for any changes in files or directories in the directory or its children. For example, given the directory structure:
+These configuration files will impact the semantic versions generated for any changes in files or directories in the directory or its children. For example, given the directory structure:
 
 ```
 <root>
@@ -261,6 +216,50 @@ The configuration file used when generating the semantic version is displayed wh
 Information about the contents of these configuration files can be found in [AutoGitSemVerSchema.SimpleSchema](https://github.com/davidbrownell/AutoGitSemVer/blob/main/src/ConfigurationSchema/AutoGitSemVerSchema.SimpleSchema).
 
 A simple example of a configuration file can be found [here](https://github.com/davidbrownell/AutoGitSemVer/blob/main/src/AutoGitSemVer.yaml).
+
+<!-- BEGIN: Exclude Package -->
+## Installation
+AutoGitSemVer can be installed via one of these methods:
+
+- [Installation via Executable](#installation-via-executable)
+- [Installation via pip](#installation-via-pip)
+
+### Installation via Executable
+Download an executable for Linux, MacOS, or Windows to the the functionality provided by this repository without a dependency on python.
+
+1. Download the archive for the latest release [here](https://github.com/davidbrownell/AutoGitSemVer/releases/latest). The filename will begin with `exe.` and contain the name of your operating system.
+2. Decompress the archive.
+
+#### Verifying Signed Executables
+Executables are signed and validated using [Minisign](https://jedisct1.github.io/minisign/). The public key used to verify the signature of the executable is `RWSGe+8DKCW2QmYfuJMyqBR2MtboMxx+F/cLB1C8DGKd9ZSchpVQBytP`.
+
+To verify that the executable is valid, download the corresponding `.minisig` file [here](https://github.com/davidbrownell/AutoGitSemVer/releases/latest) and run this command, replacing `<filename>` with the name of the file to be verified:
+
+`docker run -i --rm -v .:/host jedisct1/minisign -V -P RWSGe+8DKCW2QmYfuJMyqBR2MtboMxx+F/cLB1C8DGKd9ZSchpVQBytP -m /host/<filename>`
+
+Instructions for installing [docker](https://docker.com) are available at https://docs.docker.com/engine/install/.
+
+### Installation via pip
+To install the AutoGitSemVer package via [pip](https://pip.pypa.io/en/stable/) (Python Installer for Python) for use with your python code:
+
+`pip install AutoGitSemVer`
+
+
+## Development
+Please visit [Contributing](https://github.com/davidbrownell/AutoGitSemVer/blob/main/CONTRIBUTING.md) and [Development](https://github.com/davidbrownell/AutoGitSemVer/blob/main/DEVELOPMENT.md) for information on contributing to this project.
+<!-- END: Exclude Package -->
+
+## Additional Information
+Additional information can be found at these locations.
+
+| Title | Document | Description |
+| --- | --- | --- |
+| Code of Conduct | [CODE_OF_CONDUCT.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/CODE_OF_CONDUCT.md) | Information about the the norms, rules, and responsibilities we adhere to when participating in this open source community. |
+| Contributing | [CONTRIBUTING.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/CONTRIBUTING.md) | Information about contributing code changes to this project. |
+| Development | [DEVELOPMENT.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/DEVELOPMENT.md) | Information about development activities involved in making changes to this project. |
+| Governance | [GOVERNANCE.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/GOVERNANCE.md) | Information about how this project is governed. |
+| Maintainers | [MAINTAINERS.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/MAINTAINERS.md) | Information about individuals who maintain this project. |
+| Security | [SECURITY.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/SECURITY.md) | Information about how to privately report security issues associated with this project. |
 
 ## License
 

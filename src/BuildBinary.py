@@ -1,22 +1,10 @@
-# ----------------------------------------------------------------------
-# |
-# |  BuildBinary.py
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2024-02-01 11:32:18
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2024
-# |  Distributed under the MIT License.
-# |
-# ----------------------------------------------------------------------
-"""Builds an executable"""
+"""Builds the binary for this project."""
 
 import datetime
 import importlib
-import textwrap
+import re
 
+from functools import cache
 from pathlib import Path
 
 from cx_Freeze import setup, Executable
@@ -24,57 +12,70 @@ from dbrownell_Common import PathEx
 
 
 # ----------------------------------------------------------------------
-_name = "AutoGitSemVer"
-_initial_year = 2024
-_entry_point_script = PathEx.EnsureFile(Path(__file__).parent / _name / "EntryPoint.py")
-_copyright_template = textwrap.dedent(
-    """\
-    Copyright David Brownell {year}{year_suffix}
-    Distributed under the MIT License.
-    """,
-)
+@cache
+def _GetName() -> str:
+    return "AutoGitSemVer"
 
 
 # ----------------------------------------------------------------------
-# Get the version and docstring
-mod = importlib.import_module(_name)
-_version = mod.__version__
-
-# Get the docstring
-mod = importlib.import_module("{}.{}".format(_name, _entry_point_script.stem))
-_docstring = mod.__doc__
-
-del mod
+@cache
+def _GetVersionAndDocstring() -> tuple[str, str]:
+    mod = importlib.import_module(_GetName())
+    return mod.__version__, mod.__doc__ or ""
 
 
 # ----------------------------------------------------------------------
-# Create the year suffix
-_year = datetime.datetime.now().year
+@cache
+def _GetEntryPoint() -> Path:
+    return PathEx.EnsureFile(Path(__file__).parent / _GetName() / "EntryPoint.py")
 
-if _year == _initial_year:
-    _year_suffix = ""
-elif _year // 100 != _initial_year // 100:
-    _year_suffix = str(_year)
-else:
-    _year_suffix = "-{}".format(_year % 100)
+
+# ----------------------------------------------------------------------
+@cache
+def _GetCopyright() -> str:
+    match = re.search(
+        r"""(?#
+        Copyright                           )Copyright(?#
+        Mark [Optional]                     )(?P<mark>\s+\([cC]\))?(?#
+        Year                                )\s+(?P<year>\d{4})(?#
+        Year Range [Optional]               )(?:\s*-\s*\d{2,4})?(?#
+        Suffix                              )(?P<suffix>.+)(?#
+        End of line                         )$(?#
+        )""",
+        PathEx.EnsureFile(Path(__file__).parent.parent / "LICENSE.txt").read_text(),
+        flags=re.MULTILINE,
+    )
+
+    current_year = datetime.datetime.now().year
+
+    if not match:
+        return f"Copyright {current_year} David Brownell"
+
+    initial_year = int(match.group("year"))
+
+    if current_year == initial_year:
+        year_suffix = ""
+    elif current_year // 100 != initial_year // 100:
+        year_suffix = f"-{current_year}"
+    else:
+        year_suffix = f"-{current_year % 100}"
+
+    return f"Copyright{match.group('mark')} {initial_year}{year_suffix} David Brownell"
 
 
 # ----------------------------------------------------------------------
 setup(
-    name=_name,
-    version=_version,
-    description=_docstring,
+    name=_GetName(),
+    version=_GetVersionAndDocstring()[0],
+    description=_GetVersionAndDocstring()[1],
     executables=[
         Executable(
-            _entry_point_script,
+            _GetEntryPoint(),
             base="console",
-            copyright=_copyright_template.format(
-                year=str(_initial_year),
-                year_suffix=_year_suffix,
-            ),
+            copyright=_GetCopyright(),
             # icon=<icon_filename>,
-            target_name=_name,
-            # trademarks="",
+            target_name=_GetName(),
+            # trademarks=<trademarks>,
         ),
     ],
     options={

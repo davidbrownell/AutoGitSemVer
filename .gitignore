@@ -1,14 +1,19 @@
+post_generation_actions.html
+
 Activate*.cmd
 Activate*.sh
 Deactivate*.cmd
 Deactivate*.sh
 
-Generated/**
+**/__pycache__/**
+**/Generated/**
+
+**/.coverage
+**/lcov.info
+**/.vscode
+
 build/**
 dist/**
 src/AutoGitSemVer.egg-info/**
-.vscode/**
-**/__pycache__/**
 
-.coverage
-lcov.info
+minisign_key.pri

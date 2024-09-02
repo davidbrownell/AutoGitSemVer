@@ -1,16 +1,3 @@
-# ----------------------------------------------------------------------
-# |
-# |  ActivateEpilog.py
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2024-04-06 19:49:00
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2024
-# |  Distributed under the MIT License.
-# |
-# ----------------------------------------------------------------------
 import json
 import os
 import sys
