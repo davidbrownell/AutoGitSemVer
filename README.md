@@ -5,7 +5,7 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/davidbrownell/AutoGitSemVer?color=dark-green)](https://github.com/davidbrownell/AutoGitSemVer/commits/main/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
 [![PyPI - Version](https://img.shields.io/pypi/v/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/AutoGitSemVer)](https://pypistats.org/packages/AutoGitSemVer)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/autogitsemver)](https://pypistats.org/packages/autogitsemver)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9043/badge)](https://www.bestpractices.dev/projects/9043)
 [![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/davidbrownell/f15146b1b8fdc0a5d45ac0eb786a84f7/raw/AutoGitSemVer_coverage.json)](https://github.com/davidbrownell/AutoGitSemVer/actions)
 <!-- END: Exclude Package -->
