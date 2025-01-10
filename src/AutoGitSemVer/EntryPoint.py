@@ -26,7 +26,12 @@ from dbrownell_Common.Streams.DoneManager import DoneManager, Flags as DoneManag
 from dbrownell_Common.Streams.StreamDecorator import TextWriterT  # type: ignore [import-untyped]
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
-from AutoGitSemVer import GenerateStyle, GetSemanticVersion, GetSemanticVersionResult, __version__
+from AutoGitSemVer import (
+    GenerateStyle,
+    GetSemanticVersion,
+    GetSemanticVersionResult,
+    __version__,
+)
 
 
 # ----------------------------------------------------------------------
