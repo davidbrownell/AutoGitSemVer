@@ -36,6 +36,7 @@ from semantic_version import Version as SemVer  # type: ignore [import-untyped]
 
 # BugBug: Test
 
+
 # ----------------------------------------------------------------------
 # |
 # |  Public Types
