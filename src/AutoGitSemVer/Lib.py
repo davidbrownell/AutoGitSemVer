@@ -53,7 +53,7 @@ class Configuration:
     """Data used to configure how the semantic version is generated."""
 
     # pylint: disable=too-many-instance-attributes
-    # BugBug 
+    # BugBug
     # ----------------------------------------------------------------------
     filename: Optional[Path]
 
