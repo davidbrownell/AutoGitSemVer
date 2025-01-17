@@ -34,8 +34,6 @@ from dbrownell_Common.Streams.DoneManager import DoneManager  # type: ignore [im
 from jsonschema import Draft202012Validator, validators  # type: ignore [import-untyped]
 from semantic_version import Version as SemVer  # type: ignore [import-untyped]
 
-# BugBug: Test
-
 
 # ----------------------------------------------------------------------
 # |
@@ -54,6 +52,7 @@ DEFAULT_CONFIGURATION_FILENAMES: list[str] = [
 class Configuration:
     """Data used to configure how the semantic version is generated."""
 
+    # BugBug: Change to force build.
     # pylint: disable=too-many-instance-attributes
 
     # ----------------------------------------------------------------------
