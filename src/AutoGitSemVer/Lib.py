@@ -34,6 +34,7 @@ from dbrownell_Common.Streams.DoneManager import DoneManager  # type: ignore [im
 from jsonschema import Draft202012Validator, validators  # type: ignore [import-untyped]
 from semantic_version import Version as SemVer  # type: ignore [import-untyped]
 
+# BugBug: Test
 
 # ----------------------------------------------------------------------
 # |
@@ -76,12 +77,8 @@ class GenerateStyle(str, Enum):
     """Specifies the style by which the semantic version is generated."""
 
     Standard = "Standard"  # Uses both prerelease and build metadata: "1.2.3-prerelease+METADATA"
-    AllPrerelease = (
-        "AllPrerelease"  # Combines metadata with prerelease data: "1.2.3-prerelease.METADATA"
-    )
-    AllMetadata = (
-        "AllMetadata"  # Combines prerelease data with metadata: "1.2.3+prerelease.METADATA"
-    )
+    AllPrerelease = "AllPrerelease"  # Combines metadata with prerelease data: "1.2.3-prerelease.METADATA"
+    AllMetadata = "AllMetadata"  # Combines prerelease data with metadata: "1.2.3+prerelease.METADATA"
 
 
 # ----------------------------------------------------------------------
@@ -429,10 +426,7 @@ def GetSemanticVersion(
                 ),
             )
 
-        if (
-            configuration.include_computer_name_when_necessary
-            and include_computer_name_when_necessary
-        ):
+        if configuration.include_computer_name_when_necessary and include_computer_name_when_necessary:
             augmented_metadata.append(platform.node())
 
         if repo.is_dirty():
@@ -495,9 +489,7 @@ def GetConfiguration(
     # Load the schema
     schema_filename = Path(__file__).parent / "AutoGitSemVerSchema.json"
     if not schema_filename.is_file():
-        raise Exception(
-            "The filename '{}' does not exist.".format(schema_filename)
-        )  # pragma: no cover
+        raise Exception("The filename '{}' does not exist.".format(schema_filename))  # pragma: no cover
 
     with schema_filename.open() as f:
         schema_content = json.load(f)
@@ -542,13 +534,9 @@ def GetConfiguration(
         SemVer.coerce(configuration_content["initial_version"]),
         configuration_content["main_branch_names"],
         additional_dependencies,
-        include_branch_name_when_necessary=configuration_content[
-            "include_branch_name_when_necessary"
-        ],
+        include_branch_name_when_necessary=configuration_content["include_branch_name_when_necessary"],
         include_timestamp_when_necessary=configuration_content["include_timestamp_when_necessary"],
-        include_computer_name_when_necessary=configuration_content[
-            "include_computer_name_when_necessary"
-        ],
+        include_computer_name_when_necessary=configuration_content["include_computer_name_when_necessary"],
     )
 
 
