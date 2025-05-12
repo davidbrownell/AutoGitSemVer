@@ -1,190 +1,91 @@
-# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
-
-[build-system]
-requires = ["setuptools >= 63.0"]
-build-backend = "setuptools.build_meta"
-
-# ----------------------------------------------------------------------
-# |
-# |  Project
-# |
-# ----------------------------------------------------------------------
 [project]
 name = "AutoGitSemVer"
-description = "Generate a semantic version based on commits made to a git repository."
-
-license = { text = "MIT" }
-
+description = "Add your description here"
+readme = "README.md"
 authors = [
-    { name = "David Brownell", email = "github@DavidBrownell.com" },
+    { name = "David Brownell", email = "github@DavidBrownell.com" }
 ]
-
-keywords = [
-    # TODO: Add keywords specific to your project.
+requires-python = ">= 3.10"
+dependencies = [
+    "dbrownell-common>=0.14.6",
+    "gitpython>=3.1.44",
+    "jsonschema>=4.23.0",
+    "rtyaml>=1.0.0",
+    "semantic-version>=2.10.0",
 ]
-
-# https://pypi.org/classifiers/
+dynamic = ["version"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.10",
     "Topic :: Software Development",
     "Topic :: System :: System Shells",
     "Topic :: Terminals",
     "Topic :: Utilities",
 ]
 
-dependencies = [
-    "dbrownell_Common",
-    "GitPython ~= 3.1",
-    "jsonschema ~= 4.21",
-    "rtyaml ~= 1.0",
-    "semantic_version ~= 2.10",
-]
-
-dynamic = [
-    "version",
-]
-
-readme = "README.md"
-
-[project.optional-dependencies]
-dev = [
-    "dbrownell_DevTools",
-]
-
-package = [
-    "build ~= 1.2",
-    "cx_Freeze ~= 6.15",
-    "twine ~= 5.1",
-]
+[project.license]
+text = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/davidbrownell/AutoGitSemVer"
 Documentation = "https://github.com/davidbrownell/AutoGitSemVer"
 Repository = "https://github.com/davidbrownell/AutoGitSemVer"
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[project.scripts]
-AutoGitSemVer = "AutoGitSemVer:EntryPoint.app"
-autogitsemver = "AutoGitSemVer:EntryPoint.app"
-
-# ----------------------------------------------------------------------
-# |
-# |  black
-# |
-# ----------------------------------------------------------------------
-[tool.black]
-line-length = 100
-
-# ----------------------------------------------------------------------
-# |
-# |  pylint
-# |
-# ----------------------------------------------------------------------
-[tool.pylint.basic]
-class-const-naming-style = "any"
-function-naming-style = "PascalCase"
-good-names = [
-    "i",
-    "j",
-    "k",
-    "ex",
-    "Run",
-    "_",
-    "dm",                                   # added
-    "f",                                    # added
-]
-method-naming-style = "any"
-module-naming-style = "PascalCase"
-
-[tool.pylint.design]
-max-args = 10
-max-parents = 15
-
-[tool.pylint.main]
-ignore-paths = [
-    # Note that the pylint vscode extension has trouble with wrapping these patterns in quotes
-    # (which is required to parse the file correctly). Because of this, each pattern must be
-    # converted to a glob pattern and specified in the pylint vscode settings as well.
-    "^.+?Tests/.*$",
+[dependency-groups]
+dev = [
+    "dbrownell-commitemojis>=0.1.1",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.9",
 ]
 
-[tool.pylint."messages control"]
-disable = [
-    "raw-checker-failed",
-    "bad-inline-option",
-    "locally-disabled",
-    "file-ignored",
-    "suppressed-message",
-    "useless-suppression",
-    "deprecated-pragma",
-    "use-symbolic-message-instead",
-    "assignment-from-no-return",            # added
-    "broad-except",                         # added
-    "broad-exception-raised",               # added
-    "cell-var-from-loop",                   # added
-    "consider-using-f-string",              # added
-    "import-outside-toplevel",              # added
-    "line-too-long",                        # added
-    "missing-function-docstring",           # added
-    "subprocess-run-check",                 # added
-    "super-with-arguments",                 # added
-    "too-few-public-methods",               # added
-    "unnecessary-lambda-assignment",        # added
-    "unspecified-encoding",                 # added
-]
+[tool.hatch.version]
+path = "src/AutoGitSemVer/__init__.py"
 
-# ----------------------------------------------------------------------
-# |
-# |  pyright
-# |
-# ----------------------------------------------------------------------
-[tool.pyright]
-exclude = [
-    "**/*Tests/*",
-    "**/Generated/*",
-]
-
-reportMissingImports = true
-reportMissingTypeStubs = false
-
-# ----------------------------------------------------------------------
-# |
-# |  pytest
-# |
-# ----------------------------------------------------------------------
 [tool.pytest.ini_options]
+addopts = "--verbose -vv --capture=no --cov=AutoGitSemVer --cov-fail-under=90.0"
 python_files = [
     "**/*Test.py",
 ]
 
-# ----------------------------------------------------------------------
-# |
-# |  ruff
-# |
-# ----------------------------------------------------------------------
 [tool.ruff]
 line-length = 110
 
-# ----------------------------------------------------------------------
-# |
-# |  setuptools
-# |
-# ----------------------------------------------------------------------
-[tool.setuptools.dynamic]
-version = { attr = "AutoGitSemVer.__version__" }
+[tool.ruff.lint]
+exclude = ["tests/**"]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+ignore = [
+    "ANN002", # Missing type annotation for `*args`
+    "ANN003", # Missing type annotation for `**kwargs`
+    "BLE001", # Do not catch blind exception: `Exception`
+    "COM812", # Trailing comma missing
+    "D202", # No blank lines allowed after function docstring
+    "E501", # Line too long
+    "I001", # Import block is un-sorted or un-formatted
+    "N802", # Function name `xxx` should be lowercase
+    "N999", # Invalid module name
+    "S101", # Use of assert detected
+    "UP032", # Use f-string instead of `format` call
+]
 
-[tool.setuptools.package-data]
-AutoGitSemVer = ["*.json", ]
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-branches = 20
+max-returns = 20

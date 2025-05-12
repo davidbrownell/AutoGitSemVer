@@ -128,9 +128,7 @@ class TestGetConfiguration:
         assert configuration.include_timestamp_when_necessary
         assert configuration.initial_version == SemVer("0.0.0")
         assert configuration.main_branch_names == ["main", "master", "default"]
-        assert (
-            configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
-        )
+        assert configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         assert configuration.version_prefix is None
         assert configuration.additional_dependencies == []
 
@@ -198,9 +196,7 @@ class TestGetConfiguration:
         assert not configuration.include_timestamp_when_necessary
         assert configuration.initial_version == SemVer("1.2.3")
         assert configuration.main_branch_names == ["main", "master", "default"]
-        assert (
-            configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
-        )
+        assert configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         assert configuration.version_prefix == "Test-v"
         assert configuration.additional_dependencies == []
 
@@ -227,9 +223,7 @@ class TestGetConfiguration:
         assert configuration.include_timestamp_when_necessary
         assert configuration.initial_version == SemVer("0.0.0")
         assert configuration.main_branch_names == ["main", "master", "default"]
-        assert (
-            configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
-        )
+        assert configuration.prerelease_environment_variable_name == "AUTO_GIT_SEM_VER_PRERELEASE_NAME"
         assert configuration.version_prefix is None
         assert configuration.additional_dependencies == []
 
@@ -378,8 +372,7 @@ class TestSemanticVersion:
         assert semver.semantic_version.minor == 1
         assert semver.semantic_version.patch == 0
         assert (
-            semver.semantic_version.prerelease
-            and semver.semantic_version.prerelease[0] == "MyPrereleaseName"
+            semver.semantic_version.prerelease and semver.semantic_version.prerelease[0] == "MyPrereleaseName"
         )
 
     # ----------------------------------------------------------------------
@@ -415,10 +408,7 @@ class TestSemanticVersion:
         assert semver.semantic_version.minor == 1
         assert semver.semantic_version.patch == 0
 
-        assert (
-            semver.semantic_version.prerelease is not None
-            and len(semver.semantic_version.prerelease) >= 1
-        )
+        assert semver.semantic_version.prerelease is not None and len(semver.semantic_version.prerelease) >= 1
         standard_prerelease = semver.semantic_version.prerelease
 
         assert semver.semantic_version.build is not None and len(semver.semantic_version.build) >= 1
@@ -437,8 +427,7 @@ class TestSemanticVersion:
         assert semver.semantic_version.patch == 0
 
         assert semver.semantic_version.prerelease is not None and (
-            len(semver.semantic_version.prerelease)
-            == len(standard_prerelease) + len(standard_build)
+            len(semver.semantic_version.prerelease) == len(standard_prerelease) + len(standard_build)
         )
         assert semver.semantic_version.build == ()
 
