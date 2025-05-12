@@ -138,9 +138,7 @@ def Generate(
         sys.exit(0)
 
     output_stream: Optional[TextWriterT] = None
-    postprocess_func: Optional[
-        Callable[[DoneManager, Optional[GetSemanticVersionResult]], None]
-    ] = None
+    postprocess_func: Optional[Callable[[DoneManager, Optional[GetSemanticVersionResult]], None]] = None
 
     if quiet:
         sink = StringIO()
@@ -164,7 +162,14 @@ def Generate(
 
     else:
         output_stream = sys.stdout
-        postprocess_func = lambda *args, **kwargs: None
+
+        # ----------------------------------------------------------------------
+        def PostprocessNone(*args, **kwargs):
+            return None
+
+        # ----------------------------------------------------------------------
+
+        postprocess_func = PostprocessNone
 
     assert output_stream is not None
     assert postprocess_func is not None

@@ -17,3 +17,5 @@ dist/**
 src/AutoGitSemVer.egg-info/**
 
 minisign_key.pri
+.DS_Store
+post_generation_instructions.html
