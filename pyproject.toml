@@ -40,6 +40,10 @@ Homepage = "https://github.com/davidbrownell/AutoGitSemVer"
 Documentation = "https://github.com/davidbrownell/AutoGitSemVer"
 Repository = "https://github.com/davidbrownell/AutoGitSemVer"
 
+[project.scripts]
+AutoGitSemVer = "AutoGitSemVer:EntryPoint.app"
+autogitsemver = "AutoGitSemVer:EntryPoint.app"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
