@@ -1,21 +1,16 @@
-post_generation_actions.html
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
 
-Activate*.cmd
-Activate*.sh
-Deactivate*.cmd
-Deactivate*.sh
-
-**/__pycache__/**
-**/Generated/**
-
-**/.coverage
-**/lcov.info
-**/.vscode
-
-build/**
-dist/**
-src/AutoGitSemVer.egg-info/**
-
-minisign_key.pri
+# Virtual environments
+.venv
+.coverage
 .DS_Store
+.vscode
+coverage.xml
+minisign_key.pri
 post_generation_instructions.html

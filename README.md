@@ -227,11 +227,13 @@ A simple example of a configuration file can be found [here](https://github.com/
 | Via [pip](https://pip.pypa.io/en/stable/) | `pip install AutoGitSemVer` |
 
 ### Verifying Signed Artifacts
-Artifacts are signed and validated using [py-minisign](https://github.com/x13a/py-minisign) and the public key in the file `./minisign_key.pub`.
+Artifacts are signed and verified using [py-minisign](https://github.com/x13a/py-minisign) and the public key in the file `./minisign_key.pub`.
 
 To verify that an artifact is valid, visit [the latest release](https://github.com/davidbrownell/AutoGitSemVer/releases/latest) and download the `.minisign` signature file that corresponds to the artifact, then run the following command, replacing `<filename>` with the name of the artifact to be verified:
 
-`uv run --with py-minisign python -c "import minisign; minisign.PublicKey.from_file('minisign_key.pub').verify_file('<filename>')"`
+```shell
+uv run --with py-minisign python -c "import minisign; minisign.PublicKey.from_file('minisign_key.pub').verify_file('<filename>'); print('The file has been verified.')"
+```
 
 ## Development
 Please visit [Contributing](https://github.com/davidbrownell/AutoGitSemVer/blob/main/CONTRIBUTING.md) and [Development](https://github.com/davidbrownell/AutoGitSemVer/blob/main/DEVELOPMENT.md) for information on contributing to this project.
@@ -249,4 +251,4 @@ Additional information can be found at these locations.
 | Security | [SECURITY.md](https://github.com/davidbrownell/AutoGitSemVer/blob/main/SECURITY.md) | Information about how to privately report security issues associated with this project. |
 
 ## License
-AutoGitSemVer is licensed under the <a href="https://choosealicense.com/licenses/MIT/" target="_blank">MIT</a> license.
+`AutoGitSemVer` is licensed under the <a href="https://choosealicense.com/licenses/MIT/" target="_blank">MIT</a> license.
