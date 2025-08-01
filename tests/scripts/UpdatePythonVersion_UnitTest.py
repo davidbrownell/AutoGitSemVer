@@ -18,15 +18,14 @@ import textwrap
 from pathlib import Path
 from unittest.mock import MagicMock as Mock, mock_open, patch
 
-import pytest
-
+from click.testing import Result
 from typer.testing import CliRunner
 from AutoGitSemVer import GetSemanticVersionResult
 from AutoGitSemVer.scripts.UpdatePythonVersion import app
 
 
 # ----------------------------------------------------------------------
-def test_Default():
+def test_Python():
     _Execute(
         textwrap.dedent(
             """\
@@ -46,7 +45,7 @@ def test_Default():
 
 
 # ----------------------------------------------------------------------
-def test_NoVersion():
+def test_NoPythonVersion():
     _Execute(
         textwrap.dedent(
             """\
@@ -59,14 +58,62 @@ def test_NoVersion():
 
 
 # ----------------------------------------------------------------------
+def test_Toml():
+    _Execute(
+        textwrap.dedent(
+            """\
+            # Line Before
+            version = ""
+            # Line After
+            """,
+        ),
+        textwrap.dedent(
+            """\
+            # Line Before
+            version = "1.2.3"
+            # Line After
+            """,
+        ),
+        file_extension=".toml",
+    )
+
+
+# ----------------------------------------------------------------------
+def test_NoTomlVersion():
+    _Execute(
+        textwrap.dedent(
+            """\
+            # No version in this file
+            """,
+        ),
+        "",
+        file_extension=".toml",
+        expected_failure=True,
+    )
+
+
+# ----------------------------------------------------------------------
+def test_UnsupportedFileType():
+    result = _Execute(
+        "",
+        "",
+        file_extension=".md",
+        expected_failure=True,
+    )
+    exception_message = str(result.exception)
+    assert "README.md' is not a recognized file type." in exception_message
+
+
+# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _Execute(
     original: str,
     expected: str,
     *,
+    file_extension: str = ".py",
     expected_failure: bool = False,
-) -> str:
+) -> Result:
     # ----------------------------------------------------------------------
     def MyWrite(value):
         assert value == expected
@@ -86,11 +133,20 @@ def _Execute(
         ),
         patch.object(Path, "open", file_mock),
     ):
-        result = CliRunner().invoke(app, [__file__])
+        if file_extension == ".py":
+            placeholder_filename = Path(__file__)
+        elif file_extension == ".toml":
+            placeholder_filename = Path(__file__).parent.parent.parent / "pyproject.toml"
+        elif file_extension == ".md":
+            placeholder_filename = Path(__file__).parent.parent.parent / "README.md"
+        else:
+            assert False, file_extension
+
+        result = CliRunner().invoke(app, [str(placeholder_filename)])
 
         if expected_failure:
-            assert result.exit_code != 0
+            assert result.exit_code != 0, result.output
         else:
-            assert result.exit_code == 0
+            assert result.exit_code == 0, result.output
 
-        return result.output
+        return result

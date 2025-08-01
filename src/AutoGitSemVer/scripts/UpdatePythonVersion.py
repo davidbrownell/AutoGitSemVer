@@ -46,13 +46,13 @@ app = typer.Typer(
 # ----------------------------------------------------------------------
 @app.command("EntryPoint", help=__doc__, no_args_is_help=True)
 def EntryPoint(
-    python_filename: Annotated[
+    filename: Annotated[
         Path,
         typer.Argument(
             dir_okay=False,
             exists=True,
             resolve_path=True,
-            help="Name of the python file that contains the __version__ variable.",
+            help="Name of the python file that contains the __version__ variable or the pyproject.toml file that contains the version variable.",
         ),
     ],
     working_dir: Annotated[
@@ -76,7 +76,7 @@ def EntryPoint(
     with DoneManager.CreateCommandLine(
         flags=DoneManagerFlags.Create(verbose=verbose, debug=debug),
     ) as dm:
-        working_dir = working_dir or python_filename.parent
+        working_dir = working_dir or filename.parent
 
         version = GetSemanticVersion(
             dm,
@@ -89,17 +89,31 @@ def EntryPoint(
 
         dm.WriteLine("")
 
-        with dm.Nested(f"Updating '{python_filename}'...") as update_dm:
-            with python_filename.open(encoding="utf-8") as f:
+        with dm.Nested(f"Updating '{filename}'...") as update_dm:
+            with filename.open(encoding="utf-8") as f:
                 content = f.read()
 
-            match = re.search(
-                r"^(?P<prefix>\s*__version__\s*=\s*)(?P<quote>['\"])\S*?(?P=quote)(?P<newline>\r?\n)",
-                content,
-                flags=re.MULTILINE,
-            )
+            if filename.suffix == ".py":
+                variable_name = "__version__"
+
+                regex = re.compile(
+                    rf"^(?P<prefix>\s*{variable_name}\s*=\s*)(?P<quote>['\"])\S*?(?P=quote)(?P<newline>\r?\n)",
+                    flags=re.MULTILINE,
+                )
+            elif filename.suffix == ".toml":
+                variable_name = "version"
+
+                regex = re.compile(
+                    rf"^(?P<prefix>{variable_name}\s*=\s*)(?P<quote>['\"])\S*?(?P=quote)(?P<newline>\r?\n)",
+                    flags=re.MULTILINE,
+                )
+            else:
+                error = f"'{filename}' is not a recognized file type."
+                raise Exception(error)
+
+            match = regex.search(content)
             if not match:
-                update_dm.WriteError("A '__version__' variable was not found.\n")
+                update_dm.WriteError(f"A '{variable_name}' variable was not found.\n")
                 return
 
             content = "".join(
@@ -114,7 +128,7 @@ def EntryPoint(
                 ],
             )
 
-            with python_filename.open("w", encoding="utf-8", newline=match.group("newline")) as f:
+            with filename.open("w", encoding="utf-8", newline=match.group("newline")) as f:
                 f.write(content)
 
 
@@ -122,4 +136,4 @@ def EntryPoint(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
-    app()
+    app()  # pragma: no cover
