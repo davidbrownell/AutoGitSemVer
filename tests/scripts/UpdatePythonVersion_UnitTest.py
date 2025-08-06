@@ -18,6 +18,8 @@ import textwrap
 from pathlib import Path
 from unittest.mock import MagicMock as Mock, mock_open, patch
 
+import pytest
+
 from click.testing import Result
 from typer.testing import CliRunner
 from AutoGitSemVer import GetSemanticVersionResult
@@ -25,19 +27,22 @@ from AutoGitSemVer.scripts.UpdatePythonVersion import app
 
 
 # ----------------------------------------------------------------------
-def test_Python():
+@pytest.mark.parametrize("quote", ['"', "'", '"""', "'''"])
+@pytest.mark.parametrize("prefix", ["", "    "])
+@pytest.mark.parametrize("suffix", ["", "  # Comment!"])
+def test_Python(quote, prefix, suffix):
     _Execute(
         textwrap.dedent(
-            """\
+            f"""\
             # Line Before
-                __version__ = ""
+            {prefix}__version__ = {quote}0.0.0{quote}{suffix}
             # Line After
             """,
         ),
         textwrap.dedent(
-            """\
+            f"""\
             # Line Before
-                __version__ = "1.2.3"
+            {prefix}__version__ = {quote}1.2.3{quote}{suffix}
             # Line After
             """,
         ),
@@ -58,19 +63,22 @@ def test_NoPythonVersion():
 
 
 # ----------------------------------------------------------------------
-def test_Toml():
+@pytest.mark.parametrize("quote", ['"', '"""'])
+@pytest.mark.parametrize("prefix", ["", "    "])
+@pytest.mark.parametrize("suffix", ["", "  # Comment!"])
+def test_Toml(quote, prefix, suffix):
     _Execute(
         textwrap.dedent(
-            """\
+            f"""\
             # Line Before
-            version = ""
+            {prefix}version = {quote}0.0.0{quote}{suffix}
             # Line After
             """,
         ),
         textwrap.dedent(
-            """\
+            f"""\
             # Line Before
-            version = "1.2.3"
+            {prefix}version = {quote}1.2.3{quote}{suffix}
             # Line After
             """,
         ),
