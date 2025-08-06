@@ -97,16 +97,54 @@ def EntryPoint(
                 variable_name = "__version__"
 
                 regex = re.compile(
-                    rf"^(?P<prefix>\s*{variable_name}\s*=\s*)(?P<quote>['\"])\S*?(?P=quote)(?P<newline>\r?\n)",
-                    flags=re.MULTILINE,
+                    rf"""
+                    ^                       # Start of line
+                    (?P<prefix>
+                        \s*                 # Start of line and initial whitespace
+                        {variable_name}     # Variable
+                        \s*=\s*             # Equal
+                        (?P<quote>          # Opening quote
+                            '(?!')              # Single quote, not followed by another quote
+                            |'''(?!')           # Triple quote, not followed by another quote
+                            |\"(?!\")           # Double quote, not followed by another quote
+                            |\"\"\"(?!\")       # Triple double quote, not followed by another quote
+                        )
+                    )
+                    \S+?                    # Content
+                    (?P<suffix>
+                        (?P=quote)          # Closing quote
+                        [^\n]*?             # Optional trailing content before newline
+                    )
+                    (?P<newline>\r?\n)      # Newline
+                    """,
+                    flags=re.MULTILINE | re.VERBOSE,
                 )
+
             elif filename.suffix == ".toml":
                 variable_name = "version"
 
                 regex = re.compile(
-                    rf"^(?P<prefix>{variable_name}\s*=\s*)(?P<quote>['\"])\S*?(?P=quote)(?P<newline>\r?\n)",
-                    flags=re.MULTILINE,
+                    rf"""
+                    ^                       # Start of line
+                    (?P<prefix>
+                        \s*                 # Start of line and initial whitespace
+                        {variable_name}     # Variable
+                        \s*=\s*             # Equal
+                        (?P<quote>          # Opening quote
+                            \"(?!\")            # Double quote, not followed by another quote
+                            |\"\"\"(?!\")       # Triple double quote, not followed by another quote
+                        )
+                    )
+                    \S+?                    # Content
+                    (?P<suffix>
+                        (?P=quote)          # Closing quote
+                        [^\n]*?             # Optional trailing content before newline
+                    )
+                    (?P<newline>\r?\n)      # Newline
+                    """,
+                    flags=re.MULTILINE | re.VERBOSE,
                 )
+
             else:
                 error = f"'{filename}' is not a recognized file type."
                 raise Exception(error)
@@ -120,9 +158,8 @@ def EntryPoint(
                 [
                     content[: match.start()],
                     match.group("prefix"),
-                    match.group("quote"),
                     version.semantic_version_string,
-                    match.group("quote"),
+                    match.group("suffix"),
                     match.group("newline"),
                     content[match.end() :],
                 ],
