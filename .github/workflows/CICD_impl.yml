@@ -158,7 +158,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Update Version
-        run: uv run python -m AutoGitSemVer.scripts.UpdatePythonVersion ./src/AutoGitSemVer/__init__.py ./src --verbose
+        run: uv run python -m AutoGitSemVer.scripts.UpdatePythonVersion ./pyproject.toml ./src --verbose
 
       - name: Build Python Package
         run: uv build
