@@ -4,7 +4,7 @@
 **Package:**
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
 [![PyPI - Version](https://img.shields.io/pypi/v/AutoGitSemVer?color=dark-green)](https://pypi.org/project/AutoGitSemVer/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/AutoGitSemVer)](https://pypistats.org/packages/AutoGitSemVer)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/AutoGitSemVer)](https://pypistats.org/packages/autogitsemver)
 
 **Development:**
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)

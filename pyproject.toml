@@ -1,6 +1,12 @@
 [project]
 name = "AutoGitSemVer"
-description = "Add your description here"
+version = "0.0.0"
+#          ^^^^^
+# Wheel names will be generated according to this value. Do not manually modify this value; instead
+# update it according to committed changes by running this command from the root of the repository:
+#
+#   uv run python -m AutoGitSemVer.scripts.UpdatePythonVersion ./pyproject.toml ./src
+description = "Generate a semantic version based on commits made to a git repository."
 readme = "README.md"
 authors = [
     { name = "David Brownell", email = "github@DavidBrownell.com" }
@@ -14,7 +20,6 @@ dependencies = [
     "semantic-version>=2.10.0",
 ]
 
-dynamic = ["version"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -46,8 +51,8 @@ AutoGitSemVer = "AutoGitSemVer:EntryPoint.app"
 autogitsemver = "AutoGitSemVer:EntryPoint.app"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.8.15,<0.9.0"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
@@ -58,9 +63,6 @@ dev = [
     "pytest-cov>=6.2.1",
     "ruff>=0.12.3",
 ]
-
-[tool.hatch.version]
-path = "src/AutoGitSemVer/__init__.py"
 
 [tool.pytest.ini_options]
 addopts = "--verbose -vv --capture=no --cov=AutoGitSemVer --cov-report term --cov-report xml:coverage.xml --cov-fail-under=90.0"
@@ -104,3 +106,6 @@ max-complexity = 15
 max-args = 10
 max-branches = 20
 max-returns = 20
+
+[tool.uv.build-backend]
+module-name = "AutoGitSemVer"
