@@ -614,7 +614,7 @@ def EnumCommits(
     offset = 0
 
     while True:
-        commits = list(repo.iter_commits("HEAD", max_count=50, skip=offset))
+        commits = list(repo.iter_commits("HEAD", max_count=50, skip=offset, topo_order=True))
         if not commits:
             break
 
