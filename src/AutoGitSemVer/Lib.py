@@ -601,15 +601,16 @@ def EnumCommits(
     for tag in repo.tags:
         # Tags are most often associated with merges into a mainline branch, but we are filtering merges
         # out in the code below. Therefore, associate the tag with a parent that isn't a merge commit.
-        if len(tag.commit.parents) == 1:
+        if len(tag.commit.parents) <= 1:
             # We are looking at a direct commit to the branch
             git_tags.setdefault(tag.commit.hexsha, []).append(tag)
-        else:
-            # We are looking at a merge
-            for parent in tag.commit.parents:
-                if len(parent.parents) == 1:
-                    git_tags.setdefault(parent.hexsha, []).append(tag)
-                    break
+            continue
+
+        # We are looking at a merge
+        for parent in tag.commit.parents:
+            if len(parent.parents) == 1:
+                git_tags.setdefault(parent.hexsha, []).append(tag)
+                break
 
     offset = 0
 
