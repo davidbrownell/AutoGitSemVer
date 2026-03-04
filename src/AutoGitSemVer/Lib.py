@@ -28,9 +28,9 @@ from typing import Any, Callable, cast, ClassVar, Generator, Optional
 import git
 import rtyaml  # type: ignore [import-untyped]
 
-from dbrownell_Common.InflectEx import inflect  # type: ignore [import-untyped]
-from dbrownell_Common import PathEx  # type: ignore [import-untyped]
-from dbrownell_Common.Streams.DoneManager import DoneManager  # type: ignore [import-untyped]
+from dbrownell_Common.InflectEx import inflect
+from dbrownell_Common import PathEx
+from dbrownell_Common.Streams.DoneManager import DoneManager
 from jsonschema import Draft202012Validator, validators  # type: ignore [import-untyped]
 from semantic_version import Version as SemVer  # type: ignore [import-untyped]
 
