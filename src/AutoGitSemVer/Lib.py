@@ -496,7 +496,7 @@ def GetConfiguration(
     # Create the configuration validator. The special class is augmented to apply defaults to the
     # configuration. This code is based on https://python-jsonschema.readthedocs.io/en/latest/faq/
     validator_class = Draft202012Validator
-    validate_properties = validator_class.VALIDATORS["properties"]  # type: ignore
+    validate_properties = validator_class.VALIDATORS["properties"]
 
     # ----------------------------------------------------------------------
     def SetDefaults(validator, properties, instance, schema):
