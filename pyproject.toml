@@ -46,13 +46,13 @@ Homepage = "https://github.com/davidbrownell/AutoGitSemVer"
 Documentation = "https://github.com/davidbrownell/AutoGitSemVer"
 Repository = "https://github.com/davidbrownell/AutoGitSemVer"
 
+[build-system]
+requires = ["uv_build>=0.11.19,<0.12.0"]
+build-backend = "uv_build"
+
 [project.scripts]
 AutoGitSemVer = "AutoGitSemVer:EntryPoint.app"
 autogitsemver = "AutoGitSemVer:EntryPoint.app"
-
-[build-system]
-requires = ["uv_build>=0.8.15,<0.9.0"]
-build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
@@ -64,6 +64,12 @@ dev = [
     "ruff>=0.12.3",
     "ty>=0.0.27",
 ]
+
+[tool.uv.sources]
+autogitsemver = { workspace = true }
+
+[tool.uv.build-backend]
+module-name = "AutoGitSemVer"
 
 [tool.pytest.ini_options]
 addopts = "--verbose -vv --capture=no --cov=AutoGitSemVer --cov-report term --cov-report xml:coverage.xml --cov-fail-under=90.0"
@@ -85,6 +91,8 @@ ignore = [
     "D105", # Missing docstring in magic method
     "D107", # Missing docstring in `__init__` method
     "D202", # No blank lines allowed after function docstring
+    "D203", # Incorrect blank line before class docstring
+    "D213", # Multi line summary second line
     "E501", # Line too long
     "FIX002", # Line contains TODO, consider resolving the issue
     "I001", # Import block is un-sorted or un-formatted
@@ -107,6 +115,3 @@ max-complexity = 15
 max-args = 10
 max-branches = 20
 max-returns = 20
-
-[tool.uv.build-backend]
-module-name = "AutoGitSemVer"
