@@ -9,10 +9,25 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * *' # Once a day at 12am UTC
+    - cron: "0 0 * * *" # Once a day at 12am UTC
   workflow_dispatch:
 
 permissions: {}
+
+# A concurrency group holds at most one running and one pending run; when another run arrives, the
+# pending run is cancelled (regardless of `cancel-in-progress`).
+#
+# | Event                        | Example Group Key                     | Cancel In Progress | Effect                                               |
+# |------------------------------|---------------------------------------|--------------------|------------------------------------------------------|
+# | pull_request                 | CI+CD-refs/pull/42/merge-pull_request | Yes                | Superseded PR runs are cancelled                     |
+# | push                         | CI+CD-refs/heads/main-push-<sha>      | No                 | Unique group per push; never queued or cancelled     |
+# | schedule / workflow_dispatch | CI+CD-refs/heads/main-schedule        | No                 | Serialized per ref; newer pending run replaces older |
+#
+# Pushes are given unique groups because the release decision only examines the commits in its own
+# push; a cancelled pending push run would silently skip its release.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}${{ github.event_name == 'push' && format('-{0}', github.sha) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   CICD_Workflow:
@@ -26,8 +41,8 @@ jobs:
     with:
       # These values can be customized for your specific requirements.
       operating_system_json_string: "[ 'macos-latest', 'ubuntu-latest', 'windows-latest' ]"
-      python_version_json_string: "['3.13', '3.12', '3.11', '3.10']"
-      python_package_version: "3.10"
+      python_version_json_string: "['3.14', '3.13', '3.12', '3.11']"
+      build_python_version: "3.11"
       coverage_badge_gist_id: "f15146b1b8fdc0a5d45ac0eb786a84f7"
       coverage_badge_gist_username: "davidbrownell"
 

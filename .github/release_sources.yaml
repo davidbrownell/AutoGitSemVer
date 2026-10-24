@@ -1,6 +1,9 @@
 # Changes to any of these files or a file within these directories will trigger a release.
+#
+# Keep this list in sync with `src/AutoGitSemVer.yaml`; otherwise the version calculation and
+# the release trigger will disagree about which changes produce a release.
 src:
-  - 'src/**'
-  - 'pyproject.toml'
-  - 'README.md'
-  - 'uv.lock'
+  - "src/**"
+  - "pyproject.toml"
+  - "README.md"
+  - "uv.lock"
