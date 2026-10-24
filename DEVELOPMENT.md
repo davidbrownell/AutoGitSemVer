@@ -20,8 +20,13 @@
 | Automated Testing | `uv run pytest` or<br/>`uv run pytest --no-cov` | Run automated tests using [pytest](https://docs.pytest.org/) and extract code coverage using [coverage](https://coverage.readthedocs.io/) based on settings in `pyproject.toml`. | :white_check_mark: | :white_check_mark: |
 | Semantic Version Generation | `uv run python -m AutoGitSemVer.scripts.UpdatePythonVersion ./pyproject.toml ./src` | Generate a new [Semantic Version](https://semver.org/) based on git commits using [AutoGitSemVer](https://github.com/davidbrownell/AutoGitSemVer). Version information is stored in `pyproject.toml`. | | :white_check_mark: |
 | Python Package Creation | `uv build` | Create a python package using [uv](https://github.com/astral-sh/uv) based on settings in `pyproject.toml`. Generated packages will be written to `./dist`. | | :white_check_mark: |
-| Sign Artifacts | `uv run python -c "import minisign; minisign.SecretKey.from_file(<temp_filename>).sign_file(<filename>, trusted_comment='<package_name> v<package_version>', drop_signature=True)` | Signs artifacts using [py-minisign](https://github.com/x13a/py-minisign). Note that the private key is stored as a [GitHub secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions). | | :white_check_mark: |
+| Sign Artifacts | `uv run --no-project --with py-minisign python -c "import minisign; minisign.SecretKey.from_file(<minisig_filename>).sign_file(<artifact_filename>, trusted_comment='<artifact_filename> v<package_version>', drop_signature=True)` | Signs artifacts using [py-minisign](https://github.com/x13a/py-minisign). Note that the private key is stored as a [GitHub secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions). | | :white_check_mark: |
 | Python Package Publishing | `uv publish` | Publish a python package to [PyPi](https://pypi.org/) using [uv](https://github.com/astral-sh/uv) based on settings in `pyproject.toml`. | | :white_check_mark: |
+
+## Semantic Versioning
+Every commit that changes a file listed in `src/AutoGitSemVer.yaml` increments the patch version. Include `+minor` or `+major` in a commit message to increment the minor or major version instead.
+
+Including `+feature` in a commit message will increment the minor version.
 
 ## Contributing Changes
 Pull requests are preferred, since they are specific. For more about how to create a pull request, see https://help.github.com/articles/using-pull-requests/.

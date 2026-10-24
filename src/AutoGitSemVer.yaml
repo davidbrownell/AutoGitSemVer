@@ -2,6 +2,9 @@
 # package. This file specifies that AutoGitSemVer should only look at changes in this directory,
 # its descendants, and files specified in this list when calculating the semantic version for the
 # package.
+#
+# Keep this list in sync with `.github/release_sources.yaml`; otherwise the version calculation and
+# the release trigger will disagree about which changes produce a release.
 additional_dependencies:
   - "../pyproject.toml"
   - "../README.md"

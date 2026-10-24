@@ -4,6 +4,19 @@ description: "Releases the current repository."
 # spell-checker: words jedisct, minisig, minisign, pypi, schneegans
 
 inputs:
+  wheel_filename:
+    description: "Filename of the Python wheel being released."
+    required: true
+
+  package_version:
+    description: "Version of the Python package being released."
+    required: true
+
+  coverage_total:
+    description: "Total code coverage percentage. The code coverage badge will not be updated if this value is empty."
+    required: false
+    default: ""
+
   minisign_private_key:
     description: "Key used to sign dist artifacts. No signatures will be created if the key is empty."
     required: false
@@ -16,6 +29,7 @@ inputs:
 
   coverage_badge_gist_token:
     description: "Gist token used to store the code coverage badge."
+    required: false
     default: ""
 
   coverage_badge_gist_id:
@@ -34,7 +48,7 @@ runs:
     - name: Install uv and python
       uses: astral-sh/setup-uv@v7
       with:
-        enable-cache: false # No uv.lock or requirements.txt files, so nothing to cache on
+        enable-cache: false # Only standalone tools run here (no project sync), so there is nothing worth caching
 
     - name: Download Python Package
       uses: actions/download-artifact@v8
@@ -42,59 +56,85 @@ runs:
         name: Python package
         path: dist
 
-    # Create repository tag
+    - name: Initialize Release Values
+      id: release_values
+      shell: bash
+      env:
+        REPOSITORY_NAME: ${{ github.event.repository.name }}
+        PACKAGE_VERSION: ${{ inputs.package_version }}
+      run: |-
+        echo "tag=v${PACKAGE_VERSION}" >> "${GITHUB_OUTPUT}"
+        echo "badge_filename=${REPOSITORY_NAME}_code_coverage.json" >> "${GITHUB_OUTPUT}"
+
     - name: Create Repository Tag
       shell: bash
+      env:
+        TAG: ${{ steps.release_values.outputs.tag }}
       run: |-
+        source "${GITHUB_ACTION_PATH}/retry.sh"
+
         git config user.name "GitHub Action Bot"
         git config user.email "<>"
 
-        git tag --annotate --force -m "Publish Tag" "v${{ env.PACKAGE_VERSION }}" "${{ github.sha }}"
-        git push origin "v${{ env.PACKAGE_VERSION }}" --force
+        git tag --annotate --force -m "Publish Tag" "${TAG}" "${GITHUB_SHA}"
+        retry git push origin "${TAG}" --force
 
-    # Commit code coverage
     - name: Create Code Coverage Badge
-      if: ${{ inputs.coverage_badge_gist_token != '' && inputs.coverage_badge_gist_id != '' }}
+      id: create_code_coverage_badge
+      if: ${{ inputs.coverage_badge_gist_token != '' && inputs.coverage_badge_gist_id != '' && inputs.coverage_total != '' }}
       uses: schneegans/dynamic-badges-action@v1.8.0
       with:
         auth: ${{ inputs.coverage_badge_gist_token }}
         gistID: ${{ inputs.coverage_badge_gist_id }}
-        filename: ${{ github.event.repository.name }}_code_coverage.json
+        filename: ${{ steps.release_values.outputs.badge_filename }}
         label: Coverage
-        message: ${{ env.COVERAGE_TOTAL }}%
-        valColorRange: ${{ env.COVERAGE_TOTAL }}
+        message: ${{ inputs.coverage_total }}%
+        valColorRange: ${{ inputs.coverage_total }}
         minColorRange: 50
         maxColorRange: 90
 
     - name: Display Code Coverage Badge Url
-      if: ${{ inputs.coverage_badge_gist_token != '' && inputs.coverage_badge_gist_id != '' }}
+      if: ${{ steps.create_code_coverage_badge.outcome == 'success' }}
       shell: bash
+      env:
+        GIST_USERNAME: ${{ inputs.coverage_badge_gist_username || github.repository_owner }}
+        GIST_ID: ${{ inputs.coverage_badge_gist_id }}
+        BADGE_FILENAME: ${{ steps.release_values.outputs.badge_filename }}
+        REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
       run: |-
-        username="${{ inputs.coverage_badge_gist_username }}"
-        if [ -z "${username}" ]; then
-          username="${{ github.repository_owner }}"
-        fi
+        badge="[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/${GIST_USERNAME}/${GIST_ID}/raw/${BADGE_FILENAME})](${REPOSITORY_URL}/actions)"
 
-        echo "**Code Coverage Badge:** [![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/${username}/${{ inputs.coverage_badge_gist_id }}/raw/${{ github.event.repository.name }}_code_coverage.json)](${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions)" >> $GITHUB_STEP_SUMMARY
-        echo "**Code Coverage Badge Markdown:** <code>\[!\[Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/${username}/${{ inputs.coverage_badge_gist_id }}/raw/${{ github.event.repository.name }}_code_coverage.json)](${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions)</code>" >> $GITHUB_STEP_SUMMARY
+        echo "**Code Coverage Badge:** ${badge}" >> "${GITHUB_STEP_SUMMARY}"
+        echo "**Code Coverage Badge Markdown:** <code>${badge//\[/\\\[}</code>" >> "${GITHUB_STEP_SUMMARY}"
 
-    # Sign artifacts
     - name: Sign Artifacts
       if: ${{ inputs.minisign_private_key != '' }}
       shell: bash
+      env:
+        MINISIGN_PRIVATE_KEY: ${{ inputs.minisign_private_key }}
+        TRUSTED_COMMENT: ${{ inputs.wheel_filename }} ${{ steps.release_values.outputs.tag }}
       run: |-
-        pushd dist
+        # The key must not outlive this step, even when signing fails (self-hosted runners persist /tmp).
+        key_filename="$(mktemp -p "${RUNNER_TEMP}")"
+        trap 'rm -f "${key_filename}"' EXIT
+        printf '%s\n' "${MINISIGN_PRIVATE_KEY}" > "${key_filename}"
 
-        echo "**Signed Artifacts:**" >> $GITHUB_STEP_SUMMARY
+        cd dist
 
-        echo "${{ inputs.minisign_private_key }}" > /tmp/minisign.key
+        echo "**Signed Artifacts:**" >> "${GITHUB_STEP_SUMMARY}"
 
-        for filename in *; do
-          echo "- ${filename} [${filename}.minisig]" >> $GITHUB_STEP_SUMMARY
-          uv run --with py-minisign python -c "import minisign; minisign.SecretKey.from_file('/tmp/minisign.key').sign_file('${filename}', trusted_comment='${{ env.PACKAGE_NAME }} v${{ env.PACKAGE_VERSION }}', drop_signature=True)"
-        done
+        uv run --no-project --with py-minisign python - "${key_filename}" "${TRUSTED_COMMENT}" * >> "${GITHUB_STEP_SUMMARY}" <<'EOF'
+        import sys
 
-        rm /tmp/minisign.key
+        import minisign
+
+        key_filename, trusted_comment, *filenames = sys.argv[1:]
+        key = minisign.SecretKey.from_file(key_filename)
+
+        for filename in filenames:
+            key.sign_file(filename, trusted_comment=trusted_comment, drop_signature=True)
+            print(f"- {filename} [{filename}.minisig]")
+        EOF
 
     - name: Upload Signatures
       if: ${{ inputs.minisign_private_key != '' }}
@@ -103,15 +143,29 @@ runs:
         name: Minisign signatures
         path: ./dist/*.minisig
 
-    # Create the GitHub release
     - name: Create GitHub Release
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TAG: ${{ steps.release_values.outputs.tag }}
       run: |-
-        gh release create "v${{ env.PACKAGE_VERSION }}" ./dist/* --generate-notes
+        source "${GITHUB_ACTION_PATH}/retry.sh"
 
-    # Publish Python Package
+        # Uploading to an existing release lets a rerun recover from a failure in a later step.
+        publish_release() {
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            gh release upload "${TAG}" ./dist/* --clobber
+          else
+            gh release create "${TAG}" ./dist/* --generate-notes
+          fi
+        }
+
+        retry publish_release
+
     - name: Publish Python Package
       if: ${{ inputs.pypi_publish_token != '' }}
       shell: bash
+      env:
+        UV_PUBLISH_TOKEN: ${{ inputs.pypi_publish_token }}
       run: |-
-        uv publish --token "${{ inputs.pypi_publish_token }}" --verbose
+        uv publish --token "${UV_PUBLISH_TOKEN}" --verbose
